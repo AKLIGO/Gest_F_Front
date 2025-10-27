@@ -1,0 +1,76 @@
+<div class="p-6 bg-white shadow rounded">
+  <h2 class="text-2xl font-bold mb-4">Liste des réservations</h2>
+
+  <div *ngIf="isLoading" class="text-gray-500">Chargement...</div>
+
+  <table *ngIf="!isLoading && pagedReservations.length > 0" class="min-w-full border">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="px-4 py-2 border">Appartement</th>
+        <th class="px-4 py-2 border">Adresse</th>
+        <th class="px-4 py-2 border">Utilisateur</th>
+        <th class="px-4 py-2 border">Date Début</th>
+        <th class="px-4 py-2 border">Date Fin</th>
+        <th class="px-4 py-2 border">Montant</th>
+        <th class="px-4 py-2 border">Statut</th>
+        <th class="px-4 py-2 border">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let res of pagedReservations">
+        <td class="px-4 py-2 border">{{ res.appartementNom }}</td>
+        <td class="px-4 py-2 border">{{ res.appartementAdresse }}</td>
+        <td class="px-4 py-2 border">{{ res.utilisateurNom }} {{ res.utilisateurPrenoms }}</td>
+        <td class="px-4 py-2 border">{{ res.dateDebut | date:'dd/MM/yyyy' }}</td>
+        <td class="px-4 py-2 border">{{ res.dateFin | date:'dd/MM/yyyy' }}</td>
+        <td class="px-4 py-2 border">{{ res.montant | currency:'XOF' }}</td>
+        <td class="px-4 py-2 border">
+          <span 
+            [ngClass]="{
+              'text-green-600': res.statut === statusReservation.VALIDEE,
+              'text-yellow-600': res.statut === statusReservation.EN_ATTENTE,
+              'text-red-600': res.statut === statusReservation.ANNULEE
+            }"
+            class="font-semibold"
+          >
+            {{ res.statut }}
+          </span>
+        </td>
+        <td class="px-4 py-2 border">
+          <button class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700" 
+                  (click)="deleteReservation(res.id)">
+            Annuler
+          </button>
+
+            <!-- Bouton Valider (affiché seulement si la réservation est en attente) -->
+        <button *ngIf="res.statut === statusReservation.EN_ATTENTE"
+                class="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700 ml-2"
+                (click)="validateReservation(res.id)">
+                                Valider
+        </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && pagedReservations.length === 0" class="text-gray-500">
+    Aucune réservation trouvée.
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="mt-4 flex justify-center gap-2">
+    <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" 
+            (click)="changePage(currentPage -1)" 
+            [disabled]="currentPage===1">Précédent</button>
+
+    <button *ngFor="let page of [].constructor(totalPages); let i=index"
+            class="px-3 py-1 rounded" 
+            [ngClass]="{'bg-indigo-600 text-white': currentPage===i+1, 'bg-gray-200': currentPage!==i+1}"
+            (click)="changePage(i+1)">{{ i+1 }}</button>
+
+    <button class="px-3 py-1 bg-gray-300 rounded disabled:opacity-50" 
+            (click)="changePage(currentPage +1)" 
+            [disabled]="currentPage===totalPages">Suivant</button>
+  </div>
+</div>
+

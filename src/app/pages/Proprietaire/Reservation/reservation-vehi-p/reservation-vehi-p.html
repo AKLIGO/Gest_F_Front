@@ -1,0 +1,249 @@
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 py-8">
+  <div class="container mx-auto px-4">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mb-6">
+        <i class="fas fa-car text-3xl text-blue-600"></i>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+          Réservations de Véhicules
+        </span>
+      </h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Gérez vos réservations de véhicules en toute simplicité
+      </p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+      <div class="flex items-center">
+        <i class="fas fa-check-circle text-green-600 mr-3"></i>
+        <span class="text-green-800 font-medium">{{ successMessage }}</span>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+      <div class="flex items-center">
+        <i class="fas fa-exclamation-circle text-red-600 mr-3"></i>
+        <span class="text-red-800 font-medium">{{ errorMessage }}</span>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full mb-6 animate-pulse">
+        <i class="fas fa-spinner fa-spin text-blue-600 text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Chargement en cours...</h3>
+      <p class="text-gray-600 mb-4">Récupération de vos réservations</p>
+      <div class="w-64 bg-gray-200 rounded-full h-2 mx-auto">
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full animate-pulse" style="width: 60%"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !errorMessage && reservations.length === 0" class="text-center py-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
+        <i class="fas fa-calendar-times text-gray-400 text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucune réservation</h3>
+      <p class="text-gray-600 mb-6">Vous n'avez pas encore de réservations de véhicules</p>
+      <button (click)="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-plus mr-2"></i>Créer une réservation
+      </button>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div *ngIf="!isLoading && !errorMessage && reservations.length > 0" class="mb-6 flex justify-center space-x-4">
+      <button (click)="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-plus mr-2"></i>Nouvelle réservation
+      </button>
+      <button (click)="refreshData()" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-sync-alt mr-2"></i>Actualiser
+      </button>
+    </div>
+
+    <!-- Liste des Réservations -->
+    <div *ngIf="!isLoading && !errorMessage && reservations.length > 0" 
+         class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      
+      <div *ngFor="let reservation of reservations" 
+           class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+        
+        <!-- Header de la carte -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 border-b border-gray-100">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                <i class="fas fa-car text-white text-lg"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-gray-900">{{ reservation.vehiculeMarque }}</h3>
+                <p class="text-sm text-gray-600">{{ reservation.vehiculeImmatriculation }}</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="getStatutClass(reservation.statut)">
+              {{ reservation.statut }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Contenu de la carte -->
+        <div class="p-6">
+          <div class="space-y-4">
+            <!-- Dates -->
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-calendar-alt text-blue-500 w-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">Période</p>
+                <p class="font-medium text-gray-900">
+                  {{ formatDate(reservation.dateDebut) }} - {{ formatDate(reservation.dateFin) }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Utilisateur -->
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-user text-green-500 w-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">Client</p>
+                <p class="font-medium text-gray-900">
+                  {{ reservation.utilisateurPrenoms }} {{ reservation.utilisateurNom }}
+                </p>
+              </div>
+            </div>
+
+            <!-- ID Réservation -->
+            <div class="flex items-center space-x-3">
+              <i class="fas fa-hashtag text-purple-500 w-5"></i>
+              <div>
+                <p class="text-sm text-gray-600">ID Réservation</p>
+                <p class="font-medium text-gray-900">#{{ reservation.id }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-gray-50 px-6 py-4 flex flex-wrap justify-between items-center gap-2">
+          <button (click)="openDetailsModal(reservation)" 
+                  class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+            <i class="fas fa-eye"></i>
+            <span>Détails</span>
+          </button>
+          
+          <div class="flex flex-wrap space-x-2">
+            <!-- Bouton Valider - seulement si EN_ATTENTE -->
+            <button *ngIf="reservation.statut === 'EN_ATTENTE'" 
+                    (click)="validateReservation(reservation.id)" 
+                    class="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+              <i class="fas fa-check-circle"></i>
+              <span>Valider</span>
+            </button>
+            
+            <button (click)="openEditModal(reservation)" 
+                    class="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+              <i class="fas fa-edit"></i>
+              <span>Modifier</span>
+            </button>
+            
+            <button (click)="deleteReservation(reservation.id)" 
+                    class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+              <i class="fas fa-trash"></i>
+              <span>Supprimer</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        
+        <!-- Header Modal -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-6 rounded-t-2xl">
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl font-bold text-white">
+              <i class="fas fa-car mr-3"></i>
+              {{ isEditMode ? 'Modifier la réservation' : 'Nouvelle réservation' }}
+            </h2>
+            <button (click)="closeModal()" class="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenu Modal -->
+        <div class="p-6">
+          <form [formGroup]="reservationForm" (ngSubmit)="submitForm()" class="space-y-6">
+            
+            <!-- Véhicule -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-car mr-2 text-blue-500"></i>Véhicule
+              </label>
+              <select formControlName="vehiculeId" 
+                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white transition-colors">
+                <option value="">Sélectionner un véhicule</option>
+                <option *ngFor="let vehicule of vehicules" [value]="vehicule.id">
+                  {{ vehicule.marque }} {{ vehicule.modele }} - {{ vehicule.immatriculation }}
+                </option>
+              </select>
+              <div *ngIf="reservationForm.get('vehiculeId')?.invalid && reservationForm.get('vehiculeId')?.touched" 
+                   class="mt-2 text-red-600 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Veuillez sélectionner un véhicule
+              </div>
+            </div>
+
+            <!-- Date de début -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-calendar-plus mr-2 text-green-500"></i>Date de début
+              </label>
+              <input type="date" formControlName="dateDebut" 
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white transition-colors">
+              <div *ngIf="reservationForm.get('dateDebut')?.invalid && reservationForm.get('dateDebut')?.touched" 
+                   class="mt-2 text-red-600 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Veuillez sélectionner une date de début
+              </div>
+            </div>
+
+            <!-- Date de fin -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-calendar-minus mr-2 text-red-500"></i>Date de fin
+              </label>
+              <input type="date" formControlName="dateFin" 
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 focus:bg-white transition-colors">
+              <div *ngIf="reservationForm.get('dateFin')?.invalid && reservationForm.get('dateFin')?.touched" 
+                   class="mt-2 text-red-600 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                Veuillez sélectionner une date de fin
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <button type="button" (click)="closeModal()" 
+                      class="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200">
+                <i class="fas fa-times mr-2"></i>Annuler
+              </button>
+              <button type="submit" 
+                      [disabled]="reservationForm.invalid"
+                      class="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                <i class="fas fa-save mr-2"></i>
+                {{ isEditMode ? 'Mettre à jour' : 'Créer la réservation' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

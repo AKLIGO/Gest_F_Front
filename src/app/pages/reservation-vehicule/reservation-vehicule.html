@@ -1,0 +1,104 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <h2 class="text-2xl font-bold mb-4 text-blue-700">📅 Réservations de Véhicules</h2>
+
+  <!-- Loader -->
+  <div *ngIf="isLoading" class="text-center py-6">
+    <span class="text-gray-500">Chargement des réservations...</span>
+  </div>
+
+  <!-- Tableau des réservations -->
+  <div *ngIf="!isLoading && reservationVehicule.length > 0" class="overflow-x-auto">
+    <table class="min-w-full bg-white rounded-lg shadow">
+      <thead class="bg-blue-600 text-white">
+        <tr>
+          <th class="px-4 py-2 text-left">#</th>
+          <th class="px-4 py-2 text-left">Date début</th>
+          <th class="px-4 py-2 text-left">Date fin</th>
+          <th class="px-4 py-2 text-left">Marque</th>
+          <th class="px-4 py-2 text-left">Immatriculation</th>
+          <th class="px-4 py-2 text-left">Utilisateur</th>
+          <th class="px-4 py-2 text-left">Statut</th>
+          <th class="px-4 py-2 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let r of pagedReservations; let i = index"
+          class="border-b hover:bg-gray-100 transition"
+        >
+          <td class="px-4 py-2">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+          <td class="px-4 py-2">{{ r.dateDebut | date: 'dd/MM/yyyy' }}</td>
+          <td class="px-4 py-2">{{ r.dateFin | date: 'dd/MM/yyyy' }}</td>
+          <td class="px-4 py-2">{{ r.vehiculeMarque }}</td>
+          <td class="px-4 py-2">{{ r.vehiculeImmatriculation }}</td>
+          <td class="px-4 py-2">{{ r.utilisateurNom }} {{ r.utilisateurPrenoms }}</td>
+          <td class="px-4 py-2">
+            <span
+              class="px-3 py-1 rounded-full text-sm font-semibold"
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-700': r.statut === 'EN_ATTENTE',
+                'bg-green-100 text-green-700': r.statut === 'VALIDEE',
+                'bg-red-100 text-red-700': r.statut === 'ANNULEE'
+              }"
+            >
+              {{ r.statut }}
+            </span>
+          </td>
+
+          <td class="px-4 py-2 text-center space-x-2">
+            <!-- <button
+              class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+              (click)="validateReservation(r.id)"
+              [disabled]="r.statut === 'VALIDEE'"
+            >
+              Valider
+            </button> -->
+
+            <button
+              class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+              (click)="deleteReservation(r.id)"
+              [disabled]="r.statut === 'ANNULEE'"
+            >
+              Annuler
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Aucun résultat -->
+  <div *ngIf="!isLoading && reservationVehicule.length === 0" class="text-center text-gray-500 mt-4">
+    Aucune réservation trouvée.
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="flex justify-center mt-6 space-x-2">
+    <button
+      class="px-3 py-1 border rounded"
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      ◀
+    </button>
+
+    <button
+      *ngFor="let p of [].constructor(totalPages); let idx = index"
+      (click)="changePage(idx + 1)"
+      class="px-3 py-1 border rounded"
+      [class.bg-blue-500]="currentPage === idx + 1"
+      [class.text-white]="currentPage === idx + 1"
+    >
+      {{ idx + 1 }}
+    </button>
+
+    <button
+      class="px-3 py-1 border rounded"
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      ▶
+    </button>
+  </div>
+</div>
+

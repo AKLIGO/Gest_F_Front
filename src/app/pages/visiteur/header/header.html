@@ -1,0 +1,88 @@
+<div class="header-container">
+  <div class="max-w-7xl mx-auto px-8 py-4">
+    <div class="flex items-center justify-between gap-4">
+      <!-- Logo -->
+      <a routerLink="/" class="logo-container flex items-center space-x-3 group flex-shrink-0">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+          <i class="fas fa-home text-white text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-700 to-purple-600 bg-clip-text text-transparent">
+            LocalTogo
+          </h1>
+          <p class="text-xs text-slate-500 -mt-1">Votre partenaire immobilier</p>
+        </div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="nav-links hidden md:flex space-x-8 flex-grow justify-center">
+        <a routerLink="/"
+           routerLinkActive="text-blue-600 bg-blue-50"
+           class="nav-link relative px-4 py-2 text-lg font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group">
+          <i class="nav-icon fas fa-home mr-2"></i>Accueil
+        </a>
+        <a routerLink="/appartement"
+           routerLinkActive="text-blue-600 bg-blue-50"
+           class="nav-link relative px-4 py-2 text-lg font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group">
+          <i class="nav-icon fas fa-building mr-2"></i>Appartements
+        </a>
+        <a routerLink="/vehicules"
+           routerLinkActive="text-blue-600 bg-blue-50"
+           class="nav-link relative px-4 py-2 text-lg font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group">
+          <i class="nav-icon fas fa-car mr-2"></i>Véhicules
+        </a>
+        <a routerLink="/about"
+           routerLinkActive="text-blue-600 bg-blue-50"
+           class="nav-link relative px-4 py-2 text-lg font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group">
+          <i class="nav-icon fas fa-info-circle mr-2"></i>À propos
+        </a>
+        <a routerLink="/contact"
+           routerLinkActive="text-blue-600 bg-blue-50"
+           class="nav-link relative px-4 py-2 text-lg font-medium text-slate-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 group">
+          <i class="nav-icon fas fa-envelope mr-2"></i>Contact
+        </a>
+      </nav>
+
+      <!-- Zone Connexion / Profil -->
+      <div class="action-zone flex items-center space-x-4 flex-shrink-0 ml-auto">
+        <!-- Loading -->
+        <div *ngIf="isInitializing()" class="flex items-center space-x-2 px-4 py-2 bg-blue-50 rounded-lg">
+          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+          <span class="text-sm text-blue-600 font-medium">Chargement...</span>
+        </div>
+
+        <!-- Non connecté -->
+        <ng-container *ngIf="!isAuthenticated() && !isInitializing()">
+          <a routerLink="/login"
+             class="action-button px-4 py-2 text-slate-700 font-medium hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 flex items-center space-x-2">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Connexion</span>
+          </a>
+          <a routerLink="/register"
+             class="action-button bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
+            <i class="fas fa-user-plus"></i>
+            <span>Inscription</span>
+          </a>
+        </ng-container>
+
+        <!-- Connecté -->
+        <ng-container *ngIf="isAuthenticated() && !isInitializing()">
+          <div class="user-profile flex items-center space-x-3 bg-slate-50 rounded-lg px-4 py-2">
+            <div class="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white shadow-md">
+              <i class="fas fa-user text-sm"></i>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-sm font-semibold text-slate-800">{{ user()?.nom }} {{ user()?.prenoms }}</span>
+              <span class="text-xs text-slate-500">{{ user()?.roles?.[0]?.name }}</span>
+            </div>
+          </div>
+          <button (click)="logout()"
+                  class="action-button px-4 py-2 text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all duration-200 flex items-center space-x-2">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

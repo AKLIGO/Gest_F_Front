@@ -1,0 +1,6 @@
+export enum TypeImmeuble {
+    RESIDENTIEL = 'RESIDENTIEL',
+    COMMERCIAL = 'COMMERCIAL',
+    INDUSTRIEL = 'INDUSTRIEL',
+    MIXTE = 'MIXTE'
+  }

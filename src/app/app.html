@@ -1,0 +1,18 @@
+<div class="min-h-screen bg-gray-50">
+  <app-header></app-header>
+
+  <!-- Layout flexbox pour sidebar et contenu -->
+  <div class="flex min-h-screen">
+    <!-- Sidebar visible seulement pour Client, Propriétaire et Administrateur -->
+    <app-side-bar *ngIf="showSidebar()"></app-side-bar>
+
+    <!-- Contenu principal -->
+    <main class="flex-1 main-content">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+
+  <app-footer></app-footer>
+</div>

@@ -1,0 +1,24 @@
+<div class="activation-container">
+  <h2>Activation du compte</h2>
+  <p>Veuillez entrer le code d’activation reçu par e-mail.</p>
+
+  <form (ngSubmit)="activate()">
+    <input
+      type="text"
+      maxlength="6"
+      [(ngModel)]="activateCode"
+      name="activateCode"
+      placeholder="Entrez le code ici"
+      required
+    />
+
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Activation...' : 'Activer le compte' }}
+    </button>
+  </form>
+
+  <div *ngIf="message" [ngClass]="{ 'success': isSuccess, 'error': !isSuccess }">
+    {{ message }}
+  </div>
+</div>
+    <div *ngIf="isLoading" class="loading">Veuillez patienter...</div>  

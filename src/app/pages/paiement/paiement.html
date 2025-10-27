@@ -1,0 +1,85 @@
+<div class="p-6 bg-gray-50 min-h-screen">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Liste des paiements</h2>
+
+  <div class="overflow-x-auto bg-white rounded-2xl shadow-lg">
+    <table class="min-w-full border border-gray-200">
+      <thead class="bg-gradient-to-r from-indigo-500 to-blue-600 text-white">
+        <tr>
+          <th class="py-3 px-4 text-left font-semibold">ID</th>
+          <th class="py-3 px-4 text-left font-semibold">Utilisateur</th>
+          <th class="py-3 px-4 text-left font-semibold">Téléphone</th>
+          <th class="py-3 px-4 text-left font-semibold">Réservation</th>
+          <th class="py-3 px-4 text-left font-semibold">Montant</th>
+          <th class="py-3 px-4 text-left font-semibold">Date</th>
+          <th class="py-3 px-4 text-left font-semibold">Mode</th>
+          <th class="py-3 px-4 text-left font-semibold">Statut</th>
+          <th class="py-3 px-4 text-left font-semibold">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paiement of pagedPaiements; let i = index"
+            class="border-b hover:bg-gray-100 transition-colors">
+          <td class="py-2 px-4 text-gray-700">{{ paiement.id }}</td>
+          <td class="py-2 px-4 text-gray-700 font-medium">{{ paiement.utilisateurNom }}</td>
+          <td class="py-2 px-4 text-gray-600">{{ paiement.utilisateurTelephone }}</td>
+          <td class="py-2 px-4 text-gray-600">{{ paiement.reservationId }}</td>
+          <td class="py-2 px-4 font-semibold text-green-600">{{ paiement.montant | currency:'XOF':'symbol':'1.0-0' }}</td>
+          <td class="py-2 px-4 text-gray-600">{{ paiement.datePaiement }}</td>
+          <td class="py-2 px-4 text-blue-600 font-semibold">{{ paiement.modePaiement }}</td>
+          <td class="py-2 px-4">
+            <span
+              [ngClass]="{
+                'bg-green-100 text-green-700': paiement.statut === 'EFFECTUE',
+                'bg-yellow-100 text-yellow-700': paiement.statut === 'EN_ATTENTE',
+                'bg-red-100 text-red-700': paiement.statut === 'ANNULE'
+              }"
+              class="px-2 py-1 rounded-full text-sm font-semibold"
+            >
+              {{ paiement.statut }}
+            </span>
+          </td>
+          <td class="py-2 px-4">
+  <button
+    (click)="voirPaiementParReservation(paiement.reservationId)"
+    class="px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+  >
+    Voir paiements
+  </button>
+</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex justify-center items-center mt-6 space-x-2">
+    <button
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+      class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition"
+    >
+      ◀ Précédent
+    </button>
+
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      (click)="goToPage(i + 1)"
+      [ngClass]="{
+        'bg-indigo-600 text-white': currentPage === (i + 1),
+        'bg-gray-200 text-gray-700 hover:bg-gray-300': currentPage !== (i + 1)
+      }"
+      class="px-3 py-1 rounded-lg font-semibold transition"
+    >
+      {{ i + 1 }}
+    </button>
+
+    <button
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+      class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition"
+    >
+      Suivant ▶
+    </button>
+  </div>
+</div>
+

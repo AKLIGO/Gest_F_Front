@@ -1,0 +1,319 @@
+/* Sidebar principal */
+aside {
+    min-height: 100vh;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 10;
+  transition: transform 0.3s ease-in-out;
+  width: 288px; /* Largeur fixe en pixels */
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0; /* Empêche le sidebar de se rétrécir */
+}
+
+/* Animation pour les sous-menus */
+.sidebar-submenu {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: top;
+}
+
+/* Effet de hover pour les liens */
+.sidebar-link {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.sidebar-link:hover::before {
+  left: 100%;
+}
+
+/* Animation pour les icônes */
+.sidebar-icon {
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-link:hover .sidebar-icon {
+  transform: scale(1.1);
+}
+
+/* Style pour les éléments actifs */
+.router-link-active {
+  position: relative;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1));
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.router-link-active::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  border-radius: 2px;
+}
+
+/* Animation pour les chevrons */
+.chevron-animation {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chevron-animation.rotated {
+  transform: rotate(180deg);
+}
+
+/* Effet de glassmorphism pour le header */
+.sidebar-header {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+/* Effet de glassmorphism pour le footer */
+.sidebar-footer {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+/* Animation d'entrée pour les éléments du menu */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-menu-item {
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 320px;
+    transform: translateX(-100%);
+    z-index: 50;
+  }
+  
+  aside.sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+/* Animation pour l'ouverture/fermeture du sidebar */
+.sidebar-enter {
+  transform: translateX(-100%);
+}
+
+.sidebar-enter-active {
+  transform: translateX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-exit {
+  transform: translateX(0);
+}
+
+.sidebar-exit-active {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Scrollbar personnalisé */
+aside::-webkit-scrollbar {
+  width: 4px;
+}
+
+aside::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+aside::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 2px;
+}
+
+aside::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Effet de focus pour l'accessibilité */
+.sidebar-link:focus,
+.sidebar-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Animation de pulsation pour les notifications */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.sidebar-notification {
+  animation: pulse 2s infinite;
+}
+
+/* Styles pour le contenu principal */
+.main-content {
+  min-height: calc(100vh - 80px); /* Hauteur totale moins le header */
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  flex: 1; /* Prend tout l'espace disponible */
+}
+
+/* Responsive pour le contenu principal */
+@media (max-width: 768px) {
+  .main-content {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* Amélioration de l'affichage du contenu */
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 140px); /* Hauteur totale moins header et footer */
+}
+
+/* Styles pour les pages de contenu */
+.content-wrapper > * {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+/* Amélioration pour les sections de contenu */
+.content-wrapper section {
+  padding: 2rem;
+}
+
+.content-wrapper .py-16 {
+  padding: 2rem;
+}
+
+.content-wrapper .px-4 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Styles pour les cartes de contenu */
+.content-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  transition: all 0.3s ease;
+}
+
+.content-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Grille responsive */
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+}
+
+/* Amélioration des grilles existantes */
+.content-wrapper .grid {
+  gap: 1.5rem;
+}
+
+.content-wrapper .grid > * {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.content-wrapper .grid > *:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Amélioration des images */
+.content-wrapper img {
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.content-wrapper img:hover {
+  transform: scale(1.02);
+}
+
+/* Amélioration des boutons */
+.content-wrapper button {
+  transition: all 0.2s ease;
+}
+
+.content-wrapper button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Amélioration des titres */
+.content-wrapper h1,
+.content-wrapper h2,
+.content-wrapper h3 {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.content-wrapper h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.content-wrapper h2 {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.content-wrapper h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  }
+  

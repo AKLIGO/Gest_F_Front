@@ -1,0 +1,136 @@
+<section class="py-16 px-4 bg-gray-100">
+  <h2 class="text-3xl font-bold text-center mb-12">Nos Véhicules 🚗</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div *ngFor="let vehicule of vehicules; trackBy: trackByVehiculeId" class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <img [src]="getImageUrl(vehicule.images?.[0])" 
+           [alt]="vehicule.marque + ' ' + vehicule.modele" 
+           class="w-full h-48 object-cover">
+      <div class="p-4">
+        <h3 class="font-bold text-xl mb-2">{{ vehicule.marque }} {{ vehicule.modele }}</h3>
+        <p class="text-gray-600 mb-2">Immatriculation: {{ vehicule.immatriculation }}</p>
+        <p class="text-gray-800 mb-2 font-semibold">Prix: {{ vehicule.prix | currency:'XOF' }}</p>
+
+        <div class="flex flex-wrap gap-2 mb-2">
+          <span class="inline-block px-2 py-1 text-xs rounded"
+                [ngClass]="{
+                  'bg-green-500 text-white': vehicule.statut === StatutVehicule.DISPONIBLE,
+                  'bg-gray-400 text-white': vehicule.statut !== StatutVehicule.DISPONIBLE
+                }">{{ vehicule.statut }}</span>
+          <span class="inline-block px-2 py-1 text-xs rounded bg-blue-200 text-blue-800">{{ vehicule.type }}</span>
+          <span class="inline-block px-2 py-1 text-xs rounded bg-yellow-200 text-yellow-800">{{ vehicule.carburant }}</span>
+        </div>
+
+        <button class="w-full px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded"
+                (click)="openDetails(vehicule)">Détails</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal Détails -->
+<div *ngIf="selectedVehicule" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white w-full max-w-2xl rounded-lg overflow-hidden shadow-lg max-h-[90vh] overflow-y-auto">
+
+    <!-- Images -->
+    <div class="p-4 space-y-4">
+      <ng-container *ngIf="(selectedVehicule?.images?.length ?? 0) > 0; else noImages">
+        <div class="relative">
+          <img [src]="getImageUrl(selectedVehicule?.images?.[selectedImageIndex])"
+               class="w-full h-52 object-cover rounded-md"
+               [alt]="selectedVehicule?.marque + ' ' + selectedVehicule?.modele">
+
+          <button *ngIf="(selectedVehicule?.images?.length ?? 0) > 1"
+                  (click)="prevImage()"
+                  class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 rounded-full p-2">‹</button>
+
+          <button *ngIf="(selectedVehicule?.images?.length ?? 0) > 1"
+                  (click)="nextImage()"
+                  class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 rounded-full p-2">›</button>
+
+          <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-40 text-white text-sm px-2 py-1 rounded">
+            {{ selectedImageIndex + 1 }} / {{ selectedVehicule?.images?.length ?? 0 }}
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noImages>
+        <div class="p-8 bg-gray-200 text-center rounded">Aucune image disponible</div>
+      </ng-template>
+    </div>
+
+    <!-- Infos véhicule -->
+    <div class="p-6 border-t bg-gray-50">
+      <div class="flex flex-col md:flex-row md:items-start md:gap-6">
+        <div class="flex-1">
+          <h3 class="text-2xl font-extrabold text-gray-800 mb-2">{{ selectedVehicule?.marque }} {{ selectedVehicule?.modele }}</h3>
+          <p class="text-sm text-gray-500 mb-4">Immatriculation: {{ selectedVehicule?.immatriculation }}</p>
+
+          <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+            <div class="bg-white p-3 rounded shadow-sm">
+              <div class="text-xs text-gray-400">Type</div>
+              <div class="font-medium text-gray-800">{{ selectedVehicule?.type }}</div>
+            </div>
+            <div class="bg-white p-3 rounded shadow-sm">
+              <div class="text-xs text-gray-400">Carburant</div>
+              <div class="font-medium text-gray-800">{{ selectedVehicule?.carburant }}</div>
+            </div>
+            <div class="bg-white p-3 rounded shadow-sm">
+              <div class="text-xs text-gray-400">Statut</div>
+              <div class="font-medium"
+                   [ngClass]="{
+                     'text-green-600': selectedVehicule?.statut === StatutVehicule.DISPONIBLE,
+                     'text-gray-600': selectedVehicule?.statut !== StatutVehicule.DISPONIBLE
+                   }">{{ selectedVehicule?.statut }}</div>
+            </div>
+            <div class="bg-white p-3 rounded shadow-sm">
+              <div class="text-xs text-gray-400">Prix</div>
+              <div class="font-medium text-gray-800">{{ selectedVehicule?.prix | currency:'XOF' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Formulaire de réservation -->
+<div class="p-6 border-t bg-gray-50" *ngIf="selectedVehicule">
+  <div class="flex flex-col md:flex-row md:items-start md:gap-6">
+    <div class="flex-1">
+
+      <!-- Bouton pour afficher le formulaire -->
+      <button *ngIf="!showReservationForm" (click)="showReservationForm = true"
+              class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded mb-4">
+        Réserver ce véhicule
+      </button>
+
+      <!-- Formulaire de réservation -->
+      <div *ngIf="showReservationForm" class="mt-4">
+        <h4 class="text-lg font-semibold mb-4">Formulaire de réservation</h4>
+        <form (ngSubmit)="submitReservation(selectedVehicule!)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date début</label>
+            <input type="date" [(ngModel)]="reservationForm.dateDebut" name="dateDebut"
+                   class="w-full border-gray-300 rounded p-2" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Date fin</label>
+            <input type="date" [(ngModel)]="reservationForm.dateFin" name="dateFin"
+                   class="w-full border-gray-300 rounded p-2" required>
+          </div>
+          <div class="md:col-span-2 text-right">
+            <button type="submit" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded">
+              Confirmer la réservation
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+    <div class="p-4 border-t text-right bg-white">
+      <button class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 mr-2" (click)="closeDetails()">Fermer</button>
+    </div>
+  </div>
+</div>

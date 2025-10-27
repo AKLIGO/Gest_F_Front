@@ -1,0 +1,303 @@
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20">
+  <div class="absolute inset-0 bg-white/20"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h1 class="text-5xl font-bold text-gray-900 mb-6">
+      Nos <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Appartements</span>
+    </h1>
+    <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+      Découvrez notre sélection d'appartements modernes et confortables, parfaitement situés pour votre séjour
+    </p>
+    <div class="flex justify-center">
+      <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Filtres et recherche -->
+<section class="py-8 bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-4">
+        <div class="relative">
+          <input type="text" placeholder="Rechercher un appartement..." 
+                 class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+          <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <option>Tous les types</option>
+          <option>T1</option>
+          <option>T2</option>
+          <option>T3</option>
+        </select>
+      </div>
+      <div class="flex items-center space-x-2 text-sm text-gray-600">
+        <i class="fas fa-home text-blue-500"></i>
+        <span>{{ appartements.length }} appartements disponibles</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Grille des appartements -->
+<section class="py-16 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div *ngFor="let appart of appartements; trackBy: trackByAppartementId" 
+           class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2">
+        
+        <!-- Image avec overlay -->
+        <div class="relative overflow-hidden">
+          <img [src]="getImageUrl(appart.images?.[0])" 
+               [alt]="appart.nom" 
+               class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+          
+          <!-- Overlay avec informations -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div class="absolute bottom-4 left-4 right-4 text-white">
+              <div class="flex items-center space-x-2 mb-2">
+                <i class="fas fa-map-marker-alt text-sm"></i>
+                <span class="text-sm font-medium">{{ appart.adresse }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Badge statut -->
+          <div class="absolute top-4 right-4">
+            <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="{
+                    'bg-green-500 text-white': appart.statut === StatutAppartement.DISPONIBLE,
+                    'bg-red-500 text-white': appart.statut !== StatutAppartement.DISPONIBLE
+                  }">
+            {{ appart.statut }}
+          </span>
+          </div>
+
+          <!-- Badge type -->
+          <div class="absolute top-4 left-4">
+            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500 text-white">
+              {{ appart.type }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Contenu de la carte -->
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+            {{ appart.nom }}
+          </h3>
+          
+          <div class="flex items-center text-gray-600 mb-3">
+            <i class="fas fa-bed text-blue-500 mr-2"></i>
+            <span class="text-sm">{{ appart.nbrDePieces }} pièces</span>
+            <span class="mx-2">•</span>
+            <i class="fas fa-ruler-combined text-blue-500 mr-2"></i>
+            <span class="text-sm">{{ appart.superficie }} m²</span>
+          </div>
+
+          <div class="flex items-center justify-between mb-4">
+            <div class="text-2xl font-bold text-gray-900">
+              {{ appart.prix | currency:'XOF' }}
+            </div>
+            <div class="text-sm text-gray-500">/ mois</div>
+          </div>
+
+          <!-- Actions -->
+          <div class="space-y-3">
+            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
+                    (click)="openDetails(appart)">
+              <i class="fas fa-eye mr-2"></i>Voir les détails
+            </button>
+            
+            <button class="w-full border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all duration-200"
+                    (click)="showReservationForm(appart)">
+              <i class="fas fa-calendar-plus mr-2"></i>Réserver
+            </button>
+          </div>
+
+          <!-- Formulaire de réservation -->
+          <div *ngIf="selectedAppartementForReservation?.id === appart.id" 
+               class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h4 class="font-semibold text-blue-900 mb-3">Réserver cet appartement</h4>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                <input type="date" 
+                       [(ngModel)]="reservationForm.dateDebut" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                <input type="date" 
+                       [(ngModel)]="reservationForm.dateFin" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+              </div>
+              <button class="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                      (click)="submitReservation(appart)">
+                <i class="fas fa-check mr-2"></i>Confirmer la réservation
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal Détails Amélioré -->
+<div *ngIf="selectedAppartement" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+  <div class="bg-white w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl max-h-[95vh] overflow-y-auto">
+    
+    <!-- Header du modal -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-3xl font-bold mb-2">{{ selectedAppartement.nom }}</h2>
+          <p class="text-blue-100 flex items-center">
+            <i class="fas fa-map-marker-alt mr-2"></i>
+            {{ selectedAppartement.adresse }}
+          </p>
+        </div>
+        <button (click)="closeDetails()" 
+                class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-2 transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Images avec carousel amélioré -->
+    <div class="relative">
+      <ng-container *ngIf="(selectedAppartement.images ?? []).length > 0; else noImages">
+        <div class="relative h-96">
+          <img [src]="getImageUrl(selectedAppartement.images[selectedImageIndex])"
+               class="w-full h-full object-cover"
+               [alt]="selectedAppartement.nom ?? 'image'">
+
+          <!-- Navigation des images -->
+          <button *ngIf="(selectedAppartement.images?.length ?? 0) > 1"
+                  (click)="prevImage()"
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <button *ngIf="(selectedAppartement.images?.length ?? 0) > 1"
+                  (click)="nextImage()"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+
+          <!-- Indicateur d'images -->
+          <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white text-sm px-3 py-1 rounded-full">
+            {{ selectedImageIndex + 1 }} / {{ selectedAppartement.images.length }}
+          </div>
+
+          <!-- Badges -->
+          <div class="absolute top-4 left-4 flex space-x-2">
+            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-500 text-white">
+              {{ selectedAppartement.type }}
+            </span>
+            <span class="px-3 py-1 text-sm font-semibold rounded-full"
+                  [ngClass]="{
+                    'bg-green-500 text-white': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
+                    'bg-red-500 text-white': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
+                  }">
+              {{ selectedAppartement.statut }}
+            </span>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #noImages>
+        <div class="h-96 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+          <div class="text-center text-gray-500">
+            <i class="fas fa-image text-4xl mb-4"></i>
+            <p class="text-lg">Aucune image disponible</p>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="p-8">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Informations principales -->
+        <div class="lg:col-span-2">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-xl text-center">
+              <i class="fas fa-ruler-combined text-blue-500 text-2xl mb-2"></i>
+              <div class="text-sm text-gray-600">Superficie</div>
+              <div class="font-bold text-gray-900">{{ selectedAppartement.superficie }} m²</div>
+            </div>
+            <div class="bg-green-50 p-4 rounded-xl text-center">
+              <i class="fas fa-bed text-green-500 text-2xl mb-2"></i>
+              <div class="text-sm text-gray-600">Pièces</div>
+              <div class="font-bold text-gray-900">{{ selectedAppartement.nbrDePieces }}</div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-xl text-center">
+              <i class="fas fa-home text-purple-500 text-2xl mb-2"></i>
+              <div class="text-sm text-gray-600">Type</div>
+              <div class="font-bold text-gray-900">{{ selectedAppartement.type }}</div>
+            </div>
+            <div class="bg-orange-50 p-4 rounded-xl text-center">
+              <i class="fas fa-info-circle text-orange-500 text-2xl mb-2"></i>
+              <div class="text-sm text-gray-600">Statut</div>
+              <div class="font-bold"
+                   [ngClass]="{
+                     'text-green-600': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
+                     'text-red-600': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
+                   }">{{ selectedAppartement.statut }}</div>
+            </div>
+          </div>
+
+          <!-- Prix -->
+          <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl mb-6">
+            <div class="text-sm text-gray-600 mb-2">Prix mensuel</div>
+            <div class="text-4xl font-bold text-gray-900 mb-2">{{ selectedAppartement.prix | currency:'XOF' }}</div>
+            <div class="text-sm text-gray-500">Toutes charges comprises</div>
+            </div>
+
+          <!-- Description -->
+          <div *ngIf="selectedAppartement.description" class="bg-white border border-gray-200 p-6 rounded-xl">
+            <h4 class="text-lg font-semibold text-gray-900 mb-3">Description</h4>
+            <p class="text-gray-700 leading-relaxed">{{ selectedAppartement.description }}</p>
+          </div>
+        </div>
+
+        <!-- Actions et contact -->
+        <div class="space-y-6">
+          <div class="bg-white border border-gray-200 p-6 rounded-xl">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">Actions</h4>
+            <div class="space-y-3">
+              <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
+                <i class="fas fa-phone mr-2"></i>Contacter
+              </button>
+              <button class="w-full border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all duration-200">
+                <i class="fas fa-calendar-plus mr-2"></i>Réserver
+              </button>
+              <button class="w-full border-2 border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200">
+                <i class="fas fa-map-marker-alt mr-2"></i>Voir sur la carte
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gray-50 p-6 rounded-xl">
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">Informations</h4>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Référence:</span>
+                <span class="font-medium text-gray-900">{{ selectedAppartement.numero }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Disponibilité:</span>
+                <span class="font-medium"
+                      [ngClass]="{
+                        'text-green-600': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
+                        'text-red-600': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
+                      }">{{ selectedAppartement.statut }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

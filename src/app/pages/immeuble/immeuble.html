@@ -1,0 +1,63 @@
+<div class="p-6">
+    <h2 class="text-2xl font-bold mb-4">Gestion des Immeubles</h2>
+  
+    <!-- Chargement -->
+    <div *ngIf="isLoading" class="text-blue-500">Chargement...</div>
+  
+    <!-- Formulaire ajout -->
+    <div class="bg-gray-100 p-4 rounded mb-6">
+      <h3 class="font-semibold mb-2">Ajouter un immeuble</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <input [(ngModel)]="newImmeuble.nom" placeholder="Nom" class="border rounded px-2 py-1" />
+        <input [(ngModel)]="newImmeuble.ville" placeholder="Ville" class="border rounded px-2 py-1" />
+        <input type="number" [(ngModel)]="newImmeuble.nbrAppartment" placeholder="Nombre d'appartements" class="border rounded px-2 py-1" />
+        <input type="number" [(ngModel)]="newImmeuble.nbrEtage" placeholder="Nombre d'étages" class="border rounded px-2 py-1" />
+        <textarea [(ngModel)]="newImmeuble.description" placeholder="Description" class="border rounded px-2 py-1 col-span-2"></textarea>
+        <select [(ngModel)]="newImmeuble.type" class="border rounded px-2 py-1">
+          <option *ngFor="let t of types" [value]="t">{{t}}</option>
+        </select>
+      </div>
+      <button (click)="addImmeuble()" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        Ajouter
+      </button>
+    </div>
+  
+    <!-- Liste des immeubles -->
+    <table class="w-full border">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="border px-2 py-1">Nom</th>
+          <th class="border px-2 py-1">Ville</th>
+          <th class="border px-2 py-1">Type</th>
+          <th class="border px-2 py-1">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of immeubles">
+          <td class="border px-2 py-1">{{i.nom}}</td>
+          <td class="border px-2 py-1">{{i.ville}}</td>
+          <td class="border px-2 py-1">{{i.type}}</td>
+          <td class="border px-2 py-1">
+            <button (click)="editImmeuble(i)" class="text-yellow-600 mr-2">Modifier</button>
+            <button (click)="deleteImmeuble(i.id)" class="text-red-600">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!-- Edition -->
+    <div *ngIf="editingImmeuble" class="bg-yellow-50 p-4 mt-4 rounded">
+      <h3 class="font-semibold mb-2">Modifier l’immeuble</h3>
+      <input [(ngModel)]="editingImmeuble.nom" placeholder="Nom" class="border rounded px-2 py-1 mb-2 block" />
+      <input [(ngModel)]="editingImmeuble.ville" placeholder="Ville" class="border rounded px-2 py-1 mb-2 block" />
+      <select [(ngModel)]="editingImmeuble.type" class="border rounded px-2 py-1 mb-2 block">
+        <option *ngFor="let t of types" [value]="t">{{t}}</option>
+      </select>
+  
+      <div class="space-x-2">
+        <button (click)="updateImmeuble()" class="bg-green-600 text-white px-4 py-1 rounded">Sauvegarder</button>
+        <button (click)="cancelEdit()" class="bg-gray-400 text-white px-4 py-1 rounded">Annuler</button>
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,39 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.min-h-screen {
+    min-height: 100vh; /* Assure que le layout occupe toute la hauteur de la fenêtre */
+}
+
+.flex-1 {
+    flex: 1; /* Prend tout l'espace restant */
+}
+
+.w-64 {
+    width: 250px; /* Largeur de la barre latérale */
+}
+
+.p-4 {
+    padding: 1rem; /* Ajustez ce padding selon vos besoins */
+}
+
+app-side-bar {
+    background-color: #f4f4f4; /* Couleur de fond de la barre latérale */
+}
+
+app-footer {
+    background-color: #333; /* Couleur de fond du footer */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}

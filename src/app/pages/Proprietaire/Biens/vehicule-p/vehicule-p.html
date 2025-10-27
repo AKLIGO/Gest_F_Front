@@ -1,0 +1,385 @@
+<!-- Page Mes Véhicules - Propriétaire -->
+<div class="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 py-8">
+  <div class="container mx-auto px-4">
+    
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mb-6">
+        <i class="fas fa-car text-white text-2xl"></i>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">
+        Mes <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-600">Véhicules</span>
+      </h1>
+      <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        Gérez et suivez vos véhicules en location. Visualisez leurs statuts et performances.
+      </p>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total</p>
+            <p class="text-3xl font-bold text-gray-900">{{ vehicules.length }}</p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-car text-green-600"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Disponibles</p>
+            <p class="text-3xl font-bold text-green-600">{{ getDisponiblesCount() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-check-circle text-green-600"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Loués</p>
+            <p class="text-3xl font-bold text-red-600">{{ getLouesCount() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-key text-red-600"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Réservés</p>
+            <p class="text-3xl font-bold text-blue-600">{{ getReservesCount() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-clock text-blue-600"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">En Panne</p>
+            <p class="text-3xl font-bold text-yellow-600">{{ getEnPanneCount() }}</p>
+          </div>
+          <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-tools text-yellow-600"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full mb-6 animate-pulse">
+        <i class="fas fa-spinner fa-spin text-green-600 text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Chargement en cours...</h3>
+      <p class="text-gray-600 mb-4">Récupération de vos véhicules</p>
+      <div class="w-64 bg-gray-200 rounded-full h-2 mx-auto">
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 h-2 rounded-full animate-pulse" style="width: 60%"></div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="errorMessage && !isLoading" class="text-center py-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+      </div>
+      <p class="text-red-600 mb-4">{{ errorMessage }}</p>
+      <button (click)="loadVehiculesProprietaire()" 
+              class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+        <i class="fas fa-refresh mr-2"></i>Réessayer
+      </button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !errorMessage && vehicules.length === 0" class="text-center py-12">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
+        <i class="fas fa-car text-gray-400 text-2xl"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucun véhicule trouvé</h3>
+      <p class="text-gray-600 mb-6">Vous n'avez pas encore de véhicules enregistrés.</p>
+      <button (click)="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105">
+        <i class="fas fa-plus mr-2"></i>Ajouter un véhicule
+      </button>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div *ngIf="!isLoading && !errorMessage && vehicules.length > 0" class="mb-6 flex justify-center space-x-4">
+      <button (click)="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-plus mr-2"></i>Ajouter un véhicule
+      </button>
+      <button (click)="refreshData()" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-sync-alt mr-2"></i>Actualiser
+      </button>
+    </div>
+
+    <!-- Liste des Véhicules -->
+    <div *ngIf="!isLoading && !errorMessage && vehicules.length > 0" 
+         class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      
+      <div *ngFor="let vehicule of vehicules" 
+           class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        
+        <!-- Header Card -->
+        <div class="p-6 border-b border-gray-100">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                <i class="fas fa-car text-white"></i>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-gray-900">{{ vehicule.marque }} {{ vehicule.modele }}</h3>
+                <p class="text-sm text-gray-600">{{ vehicule.immatriculation }}</p>
+              </div>
+            </div>
+            <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="getStatutClass(vehicule.statut)">
+              {{ vehicule.statut }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Details Card -->
+        <div class="p-6">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="text-center p-3 bg-gray-50 rounded-lg">
+              <div class="text-2xl font-bold text-gray-900">{{ vehicule.prix | currency:'XOF':'symbol':'1.0-0':'fr' }}</div>
+              <div class="text-xs text-gray-600">Prix par jour</div>
+            </div>
+            <div class="text-center p-3 bg-gray-50 rounded-lg">
+              <div class="text-lg font-bold text-gray-900">{{ vehicule.type }}</div>
+              <div class="text-xs text-gray-600">Type</div>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="getCarburantClass(vehicule.carburant)">
+              {{ vehicule.carburant }}
+            </span>
+            <span class="px-3 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="getTypeClass(vehicule.type)">
+              {{ vehicule.type }}
+            </span>
+          </div>
+          
+          <!-- Actions -->
+          <div class="flex space-x-2">
+            <button (click)="openEditModal(vehicule)" class="flex-1 px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors">
+              <i class="fas fa-edit mr-2"></i>Modifier
+            </button>
+            <button (click)="openDetailsModal(vehicule)" class="flex-1 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors">
+              <i class="fas fa-eye mr-2"></i>Voir détails
+            </button>
+          </div>
+          
+          <!-- Bouton Supprimer -->
+          <div class="mt-2">
+            <button (click)="deleteVehicule(vehicule.id!)" class="w-full px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors">
+              <i class="fas fa-trash mr-2"></i>Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale pour Ajouter/Modifier/Voir détails -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      
+      <!-- Header de la modale -->
+      <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-t-2xl">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold">
+            <i class="fas fa-car mr-2"></i>
+            {{ isEditMode ? 'Modifier le véhicule' : selectedVehicule ? 'Détails du véhicule' : 'Ajouter un véhicule' }}
+          </h3>
+          <button (click)="closeModal()" class="text-white hover:text-gray-200 transition-colors">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenu de la modale -->
+      <div class="p-6">
+        
+        <!-- Mode Détails -->
+        <div *ngIf="selectedVehicule && !isEditMode" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Marque</label>
+                <div class="p-3 bg-gray-50 rounded-lg">{{ selectedVehicule.marque }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Modèle</label>
+                <div class="p-3 bg-gray-50 rounded-lg">{{ selectedVehicule.modele }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Prix par jour</label>
+                <div class="p-3 bg-gray-50 rounded-lg">{{ selectedVehicule.prix | currency:'XOF':'symbol':'1.0-0':'fr' }}</div>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Immatriculation</label>
+                <div class="p-3 bg-gray-50 rounded-lg">{{ selectedVehicule.immatriculation }}</div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                      [ngClass]="getTypeClass(selectedVehicule.type)">
+                  {{ selectedVehicule.type }}
+                </span>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                      [ngClass]="getStatutClass(selectedVehicule.statut)">
+                  {{ selectedVehicule.statut }}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Carburant</label>
+            <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                  [ngClass]="getCarburantClass(selectedVehicule.carburant)">
+              {{ selectedVehicule.carburant }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Mode Formulaire (Ajouter/Modifier) -->
+        <form *ngIf="!selectedVehicule" [formGroup]="vehiculeForm" (ngSubmit)="submitForm()" class="space-y-6">
+          
+          <!-- Marque et Modèle -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-car mr-2 text-green-500"></i>Marque *
+              </label>
+              <input type="text" formControlName="marque" placeholder="Ex: Toyota"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <div *ngIf="vehiculeForm.get('marque')?.invalid && vehiculeForm.get('marque')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                La marque est requise.
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-car mr-2 text-green-500"></i>Modèle *
+              </label>
+              <input type="text" formControlName="modele" placeholder="Ex: Corolla"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <div *ngIf="vehiculeForm.get('modele')?.invalid && vehiculeForm.get('modele')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                Le modèle est requis.
+              </div>
+            </div>
+          </div>
+
+          <!-- Immatriculation et Prix -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-id-card mr-2 text-blue-500"></i>Immatriculation *
+              </label>
+              <input type="text" formControlName="immatriculation" placeholder="Ex: TG-1234-AB"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <div *ngIf="vehiculeForm.get('immatriculation')?.invalid && vehiculeForm.get('immatriculation')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                L'immatriculation est requise.
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>Prix par jour (FCFA) *
+              </label>
+              <input type="number" formControlName="prix" placeholder="Ex: 15000"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <div *ngIf="vehiculeForm.get('prix')?.invalid && vehiculeForm.get('prix')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                Le prix est requis et doit être supérieur à 0.
+              </div>
+            </div>
+          </div>
+
+          <!-- Type et Carburant -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-tags mr-2 text-purple-500"></i>Type de véhicule *
+              </label>
+              <select formControlName="type" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+                <option value="">Sélectionner un type</option>
+                <option *ngFor="let type of typeOptions" [value]="type">{{ type }}</option>
+              </select>
+              <div *ngIf="vehiculeForm.get('type')?.invalid && vehiculeForm.get('type')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                Le type est requis.
+              </div>
+            </div>
+            
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-gas-pump mr-2 text-orange-500"></i>Carburant *
+              </label>
+              <select formControlName="carburant" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+                <option value="">Sélectionner un carburant</option>
+                <option *ngFor="let carburant of carburantOptions" [value]="carburant">{{ carburant }}</option>
+              </select>
+              <div *ngIf="vehiculeForm.get('carburant')?.invalid && vehiculeForm.get('carburant')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                Le carburant est requis.
+              </div>
+            </div>
+          </div>
+
+          <!-- Statut -->
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              <i class="fas fa-info-circle mr-2 text-green-500"></i>Statut *
+            </label>
+            <select formControlName="statut" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <option value="">Sélectionner un statut</option>
+              <option *ngFor="let statut of statutOptions" [value]="statut">{{ statut }}</option>
+            </select>
+            <div *ngIf="vehiculeForm.get('statut')?.invalid && vehiculeForm.get('statut')?.touched" class="text-red-500 text-sm flex items-center">
+              <i class="fas fa-exclamation-circle mr-1"></i>
+              Le statut est requis.
+            </div>
+          </div>
+
+          <!-- Boutons d'action -->
+          <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+            <button type="button" (click)="closeModal()" 
+                    class="px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors">
+              <i class="fas fa-times mr-2"></i>Annuler
+            </button>
+            <button type="submit" [disabled]="vehiculeForm.invalid"
+                    class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-medium rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+              <i class="fas fa-save mr-2"></i>
+              {{ isEditMode ? 'Mettre à jour' : 'Ajouter le véhicule' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
