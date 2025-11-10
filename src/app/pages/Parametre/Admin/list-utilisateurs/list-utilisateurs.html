@@ -1,1 +1,128 @@
-<p>list-utilisateurs works!</p>
+<div class="p-6 bg-gray-100 min-h-screen">
+  <h2 class="text-3xl font-bold text-center text-blue-700 mb-8">Gestion des utilisateurs</h2>
+
+
+  <!-- Ajouter un utilisateur -->
+    <div class="bg-white shadow-md rounded-xl p-6 mb-10">
+    <h3 class="text-xl font-semibold text-gray-700 mb-4">Ajouter un utilisateur</h3>
+    <form (ngSubmit)="addUser()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <input type="text" placeholder="Nom" [(ngModel)]="newUser.nom" name="nom"
+      class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required/>
+      <input type="text" placeholder="Prenoms" [(ngModel)]="newUser.prenoms" name="prenoms"
+      class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required />
+      <input type="email" placeholder="Email" [(ngModel)]="newUser.email" name="email"
+        class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required />
+
+      <input type="password" placeholder="Mot de passe" [(ngModel)]="newUser.password" name="password"
+        class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" required />
+
+      <input type="text" placeholder="Téléphone" [(ngModel)]="newUser.telephone" name="telephone"
+        class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+      <input type="text" placeholder="Adresse" [(ngModel)]="newUser.adresse" name="adresse"
+        class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+      <button type="submit"
+        class="col-span-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+        Ajouter l’utilisateur
+      </button>
+    </form>
+    </div>
+
+     <!-- Liste des utilisateurs -->
+  <div class="bg-white shadow-md rounded-xl p-6 mb-10">
+    <h3 class="text-xl font-semibold text-gray-700 mb-4">Liste des utilisateurs</h3>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-200 rounded-lg">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="py-2 px-3">ID</th>
+            <th class="py-2 px-3">Nom complet</th>
+            <th class="py-2 px-3">Email</th>
+            <th class="py-2 px-3">Téléphone</th>
+            <th class="py-2 px-3">Adresse</th>
+            <th class="py-2 px-3">Rôles</th>
+            <th class="py-2 px-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of utilisateurs" class="border-b hover:bg-gray-50">
+            <td class="py-2 px-3">{{ user.id }}</td>
+            <td class="py-2 px-3">{{ user.nom }} {{ user.prenoms }}</td>
+            <td class="py-2 px-3">{{ user.email }}</td>
+            <td class="py-2 px-3">{{ user.telephone }}</td>
+            <td class="py-2 px-3">{{ user.adresse }}</td>
+            <td class="py-2 px-3 text-sm text-gray-700">{{getRolesAsString(user)}}</td>
+            <td class="py-2 px-3 flex gap-2">
+              <!-- <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                (click)="editUser(user)">
+                ✏️ Modifier
+              </button> -->
+              <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                (click)="deleteUser(user.id!)">
+                🗑️ Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- Modifier un utilisateur -->
+<div *ngIf="selectedUser as user" class="bg-white shadow-md rounded-xl p-6 mb-10">
+  <h3 class="text-xl font-semibold text-gray-700 mb-4">Modifier un utilisateur</h3>
+
+ <form (ngSubmit)="updateUser()" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <input [(ngModel)]="selectedUser.nom" name="nom" placeholder="Nom" class="p-3 ..." />
+  <input [(ngModel)]="selectedUser.prenoms" name="prenoms" placeholder="Prénoms" class="p-3 ..." />
+  <input [(ngModel)]="selectedUser.email" name="email" placeholder="Email" class="p-3 ..." />
+  <input [(ngModel)]="selectedUser.telephone" name="telephone" placeholder="Téléphone" class="p-3 ..." />
+  <input [(ngModel)]="selectedUser.adresse" name="adresse" placeholder="Adresse" class="p-3 ..." />
+
+  <div class="col-span-full flex gap-3">
+    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+      ✅ Mettre à jour
+    </button>
+    <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+      (click)="selectedUser = null">
+      Annuler
+    </button>
+  </div>
+</form>
+
+</div>
+
+
+
+    <!-- Ajouter un rôle à un utilisateur -->
+  <div class="bg-white shadow-md rounded-xl p-6 max-w-xl mx-auto">
+  <h3 class="text-xl font-semibold text-gray-700 mb-4">Assigner un rôle à un utilisateur</h3>
+
+  <form (ngSubmit)="assignRole()" class="grid grid-cols-1 gap-4">
+    <!-- Select Utilisateur -->
+    <select [(ngModel)]="roleUser.email" name="email"
+      class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400" required>
+      <option value="" disabled selected>-- Sélectionnez un utilisateur --</option>
+      <option *ngFor="let u of utilisateurs" [value]="u.email">
+        {{ u.nom }} {{ u.prenoms }} ({{ u.email }})
+      </option>
+    </select>
+
+    <!-- Select Rôle -->
+    <select [(ngModel)]="roleUser.name" name="name"
+      class="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400" required>
+      <option value="" disabled selected>-- Sélectionnez un rôle --</option>
+      <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+    </select>
+
+    <button type="submit"
+      class="bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+      🎯 Assigner le rôle
+    </button>
+  </form>
+</div>
+
+
+  </div>

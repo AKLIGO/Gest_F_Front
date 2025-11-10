@@ -1,0 +1,80 @@
+<div class="p-4">
+  <!-- Titre de la page -->
+  <h2 class="text-2xl font-bold mb-6">Mes Réservations Véhicules</h2>
+
+  <!-- Message de chargement -->
+  <div *ngIf="loading" class="text-center text-gray-500 mb-4">
+    <span class="animate-pulse">Chargement des véhicules...</span>
+  </div>
+
+  <!-- Tableau des réservations -->
+  <div *ngIf="!loading && reservations.length > 0" class="overflow-x-auto">
+    <table class="min-w-full table-auto bg-white border border-gray-200 rounded-lg shadow-sm">
+
+      <!-- En-tête -->
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-gray-600">ID</th>
+          <th class="px-4 py-2 text-left text-gray-600">Marque</th>
+          <th class="px-4 py-2 text-left text-gray-600">Immatriculation</th>
+          <th class="px-4 py-2 text-left text-gray-600">Date Début</th>
+          <th class="px-4 py-2 text-left text-gray-600">Date Fin</th>
+          <th class="px-4 py-2 text-left text-gray-600">Statut</th>
+          <th class="px-4 py-2 text-center text-gray-600">Action</th>
+        </tr>
+      </thead>
+
+      <!-- Corps du tableau -->
+      <tbody>
+        <tr *ngFor="let res of reservations" class="border-t border-gray-200 hover:bg-gray-50">
+
+         <!-- ID -->
+    <td class="px-4 py-2 flex items-center space-x-2 whitespace-nowrap min-w-[100px]">
+  <i class="fa fa-hashtag text-gray-400"></i>
+  <span>{{ res.id }}</span>
+</td>
+
+<td class="px-4 py-2 flex items-center space-x-2 whitespace-nowrap min-w-[140px]">
+  <i class="fa fa-car text-blue-500"></i>
+  <span>{{ res.vehiculeMarque }}</span>
+</td>
+          <!-- Immatriculation -->
+          <td class="px-4 py-2">{{ res.vehiculeImmatriculation }}</td>
+
+          <!-- Dates -->
+          <td class="px-4 py-2">{{ res.dateDebut }}</td>
+          <td class="px-4 py-2">{{ res.dateFin }}</td>
+
+          <!-- Statut avec badge coloré -->
+          <td class="px-4 py-2">
+            <span
+              class="px-2 py-1 rounded-full text-xs font-semibold"
+              [ngClass]="{
+                'bg-green-500 text-white': res.statut === 'CONFIRMEE',
+                'bg-yellow-500 text-black': res.statut === 'EN_ATTENTE',
+                'bg-red-500 text-white': res.statut === 'ANNULEE'
+              }">
+              {{ res.statut }}
+            </span>
+          </td>
+
+          <!-- Bouton Payer -->
+          <td class="px-4 py-2 text-center">
+            <button
+              class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded transition duration-200"
+              (click)="payerReservation(res.id)">
+              <i class="fa fa-credit-card mr-2"></i>
+              Payer
+            </button>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Message si aucune réservation -->
+  <div *ngIf="!loading && reservations.length === 0" class="text-center text-gray-500 mt-6">
+    <p>Aucune réservation de véhicule trouvée.</p>
+  </div>
+</div>

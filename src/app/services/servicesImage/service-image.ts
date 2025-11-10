@@ -13,6 +13,14 @@ export class ServiceImage {
 
   constructor(private http: HttpClient) {}
 
+    private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('access_token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
+
     /**
    * Upload image en liant à un appartement via son ID
    */
@@ -129,5 +137,22 @@ export class ServiceImage {
     return this.http.get<ImageDTO[]>(`${this.apiUrl}/appartements`);
   }
 
+  getAppartementsConnected(): Observable<ImageDTO[]> {
+    return this.http.get<ImageDTO[]>(`${this.apiUrl}/me/appartements`,{ headers: this.getHeaders() });
+  }
+
+  getVehiculesConnected(): Observable<ImageDTOv[]> {
+    return this.http.get<ImageDTOv[]>(`${this.apiUrl}/me/vehicules`,{ headers: this.getHeaders() });
+  }
+
+  // -------------------- PROPRIETAIRE SPÉCIFIQUE --------------------
+
+  getAppartementsByProprietaire(proprietaireId: number): Observable<ImageDTO[]> {
+    return this.http.get<ImageDTO[]>(`${this.apiUrl}/appartements/${proprietaireId}`,{ headers: this.getHeaders() });
+  }
+
+  getVehiculesByProprietaire(proprietaireId: number): Observable<ImageDTOv[]> {
+    return this.http.get<ImageDTOv[]>(`${this.apiUrl}/vehicules/${proprietaireId}`,{ headers: this.getHeaders() });
+  }
   
 }

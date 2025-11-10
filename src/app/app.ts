@@ -5,7 +5,11 @@ import { Header } from "./pages/visiteur/header/header";
 import{CommonModule } from '@angular/common';
 import { SideBar } from "./pages/client/side-bar/side-bar";
 import { UtilisateurService } from './services/utilisateur-service';
-
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import { NgModule, LOCALE_ID } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+registerLocaleData(localeFr);
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -23,5 +27,5 @@ export class App {
     if (!user || !user.roles) return false;
     return user.roles.some(r => ['CLIENT', 'PROPRIETAIRE', 'ADMIN'].includes(r.name));
   });
-    
+
 }

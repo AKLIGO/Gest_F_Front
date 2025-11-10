@@ -25,19 +25,19 @@ export class AppartementP implements OnInit {
   currentUser: Utilisateurs | null = null;
   isLoading = false;
   errorMessage = '';
-  
+
   // Cache simple
   private dataLoaded = false;
   private lastLoadTime = 0;
   private readonly CACHE_DURATION = 30000; // 30 secondes
-  
+
   // Formulaires réactifs
   appartementForm: FormGroup;
   isEditMode = false;
   editingAppartementId?: number;
   showModal = false;
   selectedAppartement: AppartementCreate | null = null;
-  
+
   // Options pour les formulaires
   typeOptions = Object.values(TypeAppartement);
   statutOptions = Object.values(StatutAppartement);
@@ -57,6 +57,7 @@ export class AppartementP implements OnInit {
       superficie: ['', Validators.required],
       nbrDePieces: [0, Validators.required],
       description: [''],
+      localisation:['',Validators.required],
       type: [null, Validators.required],
       statut: [null, Validators.required],
       immeubleId: [null, Validators.required]
@@ -80,12 +81,12 @@ export class AppartementP implements OnInit {
 
   loadAppartementsProprietaire(): void {
     if (!this.currentUser?.id) return;
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     const cacheKey = `appartements_${this.currentUser.id}`;
-    
+
     this.cacheService.get(
       cacheKey,
       () => this.serviceApp.getMesAppartements().pipe(
@@ -191,6 +192,7 @@ export class AppartementP implements OnInit {
       superficie: app.superficie,
       nbrDePieces: app.nbrDePieces,
       description: app.description,
+      localisation:app.localisation,
       type: app.type,
       statut: app.statut,
       immeubleId: app.immeubleId
@@ -200,6 +202,7 @@ export class AppartementP implements OnInit {
 
   openDetailsModal(app: AppartementCreate): void {
     this.selectedAppartement = app;
+    console.log('Appartement sélectionné:', this.selectedAppartement);
     this.isEditMode = false;
     this.editingAppartementId = undefined;
     this.showModal = true;
@@ -256,7 +259,7 @@ export class AppartementP implements OnInit {
 
   deleteAppartement(id: number): void {
     if (!confirm('Voulez-vous vraiment supprimer cet appartement ?')) return;
-    
+
     this.serviceApp.deleteAppartement(id).subscribe({
       next: () => {
         this.refreshData();

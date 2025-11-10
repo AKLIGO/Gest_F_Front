@@ -11,9 +11,10 @@ export interface AppartementDTO {
     nbrDePieces: number;
     description: string;
     prix: number;
-    type: TypeAppartement; 
+    localisation:string;
+    type: TypeAppartement;
     statut: StatutAppartement;
     createdAt: string;
-    lastModifiedDate: string; 
+    lastModifiedDate: string;
     images: ImageDTO[];
   }

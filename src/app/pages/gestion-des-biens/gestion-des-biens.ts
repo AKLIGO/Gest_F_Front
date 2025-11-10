@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-gestion-des-biens',
   standalone:true,
-  imports: [CommonModule, ReactiveFormsModule], 
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './gestion-des-biens.html',
   styleUrls: ['./gestion-des-biens.css']
 })
@@ -28,6 +28,7 @@ export class GestionDesBiens implements OnInit {
   currentUser: Utilisateurs | null = null;
   isProprietaire = false;
   isAdmin = false;
+  message: string = '';
 
   typeOptions = Object.values(TypeAppartement);
   statutOptions = Object.values(StatutAppartement);
@@ -49,7 +50,8 @@ export class GestionDesBiens implements OnInit {
       description: [''],
       type: [null, Validators.required],
       statut: [null, Validators.required],
-      immeubleId: [null, Validators.required]
+      localisation:[null,Validators.required],
+      immeubleId: [null]
     });
   }
 
@@ -74,7 +76,7 @@ export class GestionDesBiens implements OnInit {
   checkUserRoles(): void {
     if (this.currentUser?.roles) {
       this.isProprietaire = this.currentUser.roles.some(role => role.name === 'PROPRIETAIRE');
-      this.isAdmin = this.currentUser.roles.some(role => role.name === 'ADMINISTRATEUR');
+      this.isAdmin = this.currentUser.roles.some(role => role.name === 'ADMIN');
     }
   }
 
@@ -151,6 +153,7 @@ export class GestionDesBiens implements OnInit {
       description: app.description,
       type: app.type,
       statut: app.statut,
+      localisation:app.localisation,
       immeubleId: app.immeubleId // correction ici
     });
   }
@@ -172,12 +175,12 @@ export class GestionDesBiens implements OnInit {
   canEditAppartement(app: AppartementCreate): boolean {
     // L'administrateur peut modifier tous les appartements
     if (this.isAdmin) return true;
-    
+
     // Le propriétaire ne peut modifier que ses propres appartements
     if (this.isProprietaire && this.currentUser?.id) {
       return app.proprietaireId === this.currentUser.id;
     }
-    
+
     return false;
   }
 
@@ -185,4 +188,18 @@ export class GestionDesBiens implements OnInit {
     // Même logique que pour l'édition
     return this.canEditAppartement(app);
   }
+
+  publierAppartement(id: number, publie: boolean) {
+    this.serviceApp.autoriserAffichage(id, publie).subscribe({
+      next: (updated) => {
+        const idx = this.appartements.findIndex(a => a.id === updated.id);
+        if (idx !== -1) {
+          this.appartements[idx] = { ...this.appartements[idx], ...updated } as any;
+        }
+        this.message = publie ? 'Appartement publié avec succès.' : 'Appartement dépublié avec succès.';
+        this.loadAppartements();
+      },
+      error: err => console.error('Erreur lors de la publication/dépublication :', err)
+    });
+  }
 }

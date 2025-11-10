@@ -25,14 +25,14 @@ export class ReservationVehiP implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
-  
+
   // Formulaires réactifs
   reservationForm: FormGroup;
   showModal = false;
   selectedReservation: ReservationResponseVehi | null = null;
   isEditMode = false;
   editingReservationId?: number;
-  
+
   // Options pour les statuts
   statutOptions = ['EN_ATTENTE', 'CONFIRMEE', 'ANNULEE', 'TERMINEE'];
 
@@ -66,12 +66,12 @@ export class ReservationVehiP implements OnInit {
 
   loadReservations(): void {
     if (!this.currentUser?.id) return;
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     const cacheKey = `reservations_vehicules_${this.currentUser.id}`;
-    
+
     this.cacheService.get(
       cacheKey,
       () => this.reservationService.getMesReservationsVehicules().pipe(
@@ -95,7 +95,7 @@ export class ReservationVehiP implements OnInit {
 
   loadVehicules(): void {
     const cacheKey = 'vehicules_disponibles';
-    
+
     this.cacheService.get(
       cacheKey,
       () => this.vehiculeService.listVehiculesVue().pipe(
@@ -143,18 +143,18 @@ export class ReservationVehiP implements OnInit {
     this.isEditMode = true;
     this.selectedReservation = reservation;
     this.editingReservationId = reservation.id;
-    
+
     // Trouver le véhicule correspondant
-    const vehicule = this.vehicules.find(v => 
+    const vehicule = this.vehicules.find(v =>
       `${v.marque} ${v.modele}` === `${reservation.vehiculeMarque} ${reservation.vehiculeImmatriculation}`
     );
-    
+
     this.reservationForm.patchValue({
       dateDebut: reservation.dateDebut.split('T')[0], // Convertir de ISO à YYYY-MM-DD
       dateFin: reservation.dateFin.split('T')[0],
       vehiculeId: vehicule?.id || null
     });
-    
+
     this.showModal = true;
   }
 
@@ -174,7 +174,7 @@ export class ReservationVehiP implements OnInit {
   submitForm(): void {
     if (this.reservationForm.valid) {
       const formData = this.reservationForm.value;
-      
+
       if (this.isEditMode && this.editingReservationId) {
         this.updateReservationStatus(this.editingReservationId, 'CONFIRMEE');
       } else {
@@ -223,13 +223,13 @@ export class ReservationVehiP implements OnInit {
 
   validateReservation(id: number): void {
     if (!confirm('Voulez-vous valider cette réservation ?')) return;
-    
+
     this.updateReservationStatus(id, 'CONFIRMEE');
   }
 
   deleteReservation(id: number): void {
     if (!confirm('Voulez-vous vraiment supprimer cette réservation ?')) return;
-    
+
     this.reservationService.deleteReservation(id).subscribe({
       next: () => {
         this.successMessage = 'Réservation supprimée avec succès';

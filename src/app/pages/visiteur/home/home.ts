@@ -217,4 +217,11 @@ showReservationForm(appart: AppartementDTO) {
   });
 }
 
+
+openMap(localisation: string) {
+  if (localisation) {
+    window.open(localisation, '_blank');
+  }
+}
+
 }

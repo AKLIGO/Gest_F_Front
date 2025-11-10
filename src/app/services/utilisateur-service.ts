@@ -7,6 +7,7 @@ import { AuthenticationResponse } from '../interfaces/AuthenticationResponse';
 import { Utilisateurs } from '../interfaces/Utilisateurs';
 import { jwtDecode } from 'jwt-decode';
 import { UserDto } from '../interfaces/UserDto';
+import { RoleUser } from '../interfaces/RoleUser';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,32 @@ export class UtilisateurService {
     return this.httpclient.post(`${this.baseUrl}/addUser`, request);
   }
 
+  getAllUtilisateurs():Observable<Utilisateurs[]> {
+    return this.httpclient.get<Utilisateurs[]>(`${this.baseUrl}/listUser`);
+  }
+
+updateUtilisateur(id: number, user: Utilisateurs): Observable<Utilisateurs> {
+  const token = this.getToken();
+  if (!token) {
+    throw new Error("Utilisateur non authentifié");
+  }
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.httpclient.put<Utilisateurs>(
+    `${this.baseUrl}/modifierUtilisateur/${id}`, 
+    user, 
+    { headers }
+  );
+}
+
+
+
+  addRoleToUser(request:RoleUser){
+    return this.httpclient.post(`${this.baseUrl}/addRoleAUtilisateur`,request);
+  }
+
+    deleteUser(id: number): Observable<void> {
+    return this.httpclient.delete<void>(`${this.baseUrl}/supprimerUtilisateur/${id}`);
+  }
   authenticate(request: Authentication): Observable<AuthenticationResponse> {
     return this.httpclient.post<AuthenticationResponse>(`${this.baseUrl}/authenticate`, request);
   }

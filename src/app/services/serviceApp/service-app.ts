@@ -114,4 +114,13 @@ export class ServiceApp {
     return this.http.put<AppartementCreate>(`${this.apiUrl}/${id}`, formData);
   }
 
+  /**
+       * Publier / dépublier un appartement (autoriser l'affichage)
+       */
+      autoriserAffichage(id: number, publie: boolean): Observable<AppartementCreate> {
+        const params = new HttpParams().set('publie', String(publie));
+        // Envoyer un corps vide JSON pour éviter 415 Unsupported Media Type avec Content-Type: application/json
+        return this.http.put<AppartementCreate>(`${this.apiUrl}/${id}/publication`, {}, { headers: this.getHeaders(), params });
+}
+
 }

@@ -55,7 +55,7 @@
       </button>
     </div>
 
-    <!-- Boutons d'action -->
+    <!-- Action Buttons -->
     <div *ngIf="!isLoading && !errorMessage && reservations.length > 0" class="mb-6 flex justify-center space-x-4">
       <button (click)="openAddModal()" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
         <i class="fas fa-plus mr-2"></i>Nouvelle réservation
@@ -65,14 +65,11 @@
       </button>
     </div>
 
-    <!-- Liste des Réservations -->
-    <div *ngIf="!isLoading && !errorMessage && reservations.length > 0" 
-         class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-      
-      <div *ngFor="let reservation of reservations" 
-           class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
+    <!-- Reservations List -->
+    <div *ngIf="!isLoading && !errorMessage && reservations.length > 0" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div *ngFor="let reservation of reservations" class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 overflow-hidden">
         
-        <!-- Header de la carte -->
+        <!-- Card Header -->
         <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 border-b border-gray-100">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center space-x-3">
@@ -84,14 +81,13 @@
                 <p class="text-sm text-gray-600">{{ reservation.appartementAdresse }}</p>
               </div>
             </div>
-            <span class="px-3 py-1 text-xs font-semibold rounded-full"
-                  [ngClass]="getStatutClass(reservation.statut)">
+            <span class="px-3 py-1 text-xs font-semibold rounded-full" [ngClass]="getStatutClass(reservation.statut)">
               {{ reservation.statut }}
             </span>
           </div>
         </div>
 
-        <!-- Contenu de la carte -->
+        <!-- Card Content -->
         <div class="p-6">
           <div class="space-y-4">
             <!-- Dates -->
@@ -99,13 +95,11 @@
               <i class="fas fa-calendar-alt text-green-500 w-5"></i>
               <div>
                 <p class="text-sm text-gray-600">Période</p>
-                <p class="font-medium text-gray-900">
-                  {{ formatDate(reservation.dateDebut) }} - {{ formatDate(reservation.dateFin) }}
-                </p>
+                <p class="font-medium text-gray-900">{{ formatDate(reservation.dateDebut) }} - {{ formatDate(reservation.dateFin) }}</p>
               </div>
             </div>
 
-            <!-- Montant -->
+            <!-- Amount -->
             <div class="flex items-center space-x-3">
               <i class="fas fa-money-bill-wave text-emerald-500 w-5"></i>
               <div>
@@ -114,18 +108,16 @@
               </div>
             </div>
 
-            <!-- Utilisateur -->
+            <!-- User -->
             <div class="flex items-center space-x-3">
               <i class="fas fa-user text-blue-500 w-5"></i>
               <div>
                 <p class="text-sm text-gray-600">Client</p>
-                <p class="font-medium text-gray-900">
-                  {{ reservation.utilisateurPrenoms }} {{ reservation.utilisateurNom }}
-                </p>
+                <p class="font-medium text-gray-900">{{ reservation.utilisateurPrenoms }} {{ reservation.utilisateurNom }}</p>
               </div>
             </div>
 
-            <!-- ID Réservation -->
+            <!-- Reservation ID -->
             <div class="flex items-center space-x-3">
               <i class="fas fa-hashtag text-purple-500 w-5"></i>
               <div>
@@ -138,16 +130,14 @@
 
         <!-- Actions -->
         <div class="bg-gray-50 px-6 py-4 flex flex-wrap justify-between items-center gap-2">
-          <button (click)="openDetailsModal(reservation)" 
-                  class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+          <!--<button (click)="openDetailsModal(reservation)" class="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200 flex items-center space-x-2">
             <i class="fas fa-eye"></i>
             <span>Détails</span>
-          </button>
+          </button>-->
           
           <div class="flex flex-wrap space-x-2">
-            <!-- Bouton Valider - seulement si EN_ATTENTE -->
-            <button *ngIf="reservation.statut === 'EN_ATTENTE'" 
-                    (click)="validateReservation(reservation.id)" 
+            <!-- Validate Button - only if EN_ATTENTE -->
+            <button *ngIf="reservation.statut === 'EN_ATTENTE'" (click)="validateReservation(reservation.id)" 
                     class="px-4 py-2 bg-green-600 text-white hover:bg-green-700 rounded-lg transition-colors duration-200 flex items-center space-x-2">
               <i class="fas fa-check-circle"></i>
               <span>Valider</span>
@@ -173,7 +163,7 @@
     <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         
-        <!-- Header Modal -->
+        <!-- Modal Header -->
         <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 rounded-t-2xl">
           <div class="flex items-center justify-between">
             <h2 class="text-2xl font-bold text-white">
@@ -186,7 +176,7 @@
           </div>
         </div>
 
-        <!-- Contenu Modal -->
+        <!-- Modal Content -->
         <div class="p-6">
           <form [formGroup]="reservationForm" (ngSubmit)="submitForm()" class="space-y-6">
             

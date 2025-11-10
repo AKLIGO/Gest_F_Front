@@ -1,0 +1,51 @@
+<div class="p-4">
+  <h2 class="text-2xl font-bold mb-4">Mes Réservations Appartements</h2>
+
+  <div *ngIf="loading" class="text-center text-gray-500">Chargement des appartements...</div>
+
+  <div *ngIf="!loading && reservations.length > 0" class="overflow-x-auto">
+    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-4 py-2 text-left text-gray-600">ID</th>
+          <th class="px-4 py-2 text-left text-gray-600">Appartement</th>
+          <th class="px-4 py-2 text-left text-gray-600">Date Début</th>
+          <th class="px-4 py-2 text-left text-gray-600">Date Fin</th>
+          <th class="px-4 py-2 text-left text-gray-600">Statut</th>
+          <th class="px-4 py-2 text-center text-gray-600">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let res of reservations" class="border-t border-gray-200 hover:bg-gray-50">
+          <td class="px-4 py-2">{{ res.id }}</td>
+          <td class="px-4 py-2">{{ res.appartementNom }}</td>
+          <td class="px-4 py-2">{{ res.dateDebut }}</td>
+          <td class="px-4 py-2">{{ res.dateFin }}</td>
+          <td class="px-4 py-2">
+          <span
+            class="px-2 py-1 rounded-full text-xs font-semibold"
+            [ngClass]="{
+            'bg-green-500 text-white': res.statut === 'CONFIRMEE',
+            'bg-yellow-500 text-black': res.statut === 'EN_ATTENTE',
+            'bg-red-500 text-white': res.statut === 'ANNULEE'
+              }">
+            {{ res.statut }}
+          </span>
+          </td>
+          <td class="px-4 py-2 text-center">
+            <button
+              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded transition"
+              (click)="payerReservation(res.id)">
+              Payer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && reservations.length === 0" class="text-center text-gray-500 mt-4">
+    <p>Aucune réservation d'appartement trouvée.</p>
+  </div>
+</div>
+

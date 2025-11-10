@@ -1,1 +1,203 @@
-<p>image-app-p works!</p>
+<div class="container mx-auto mt-6">
+    <div class="flex justify-center">
+      <div class="w-full max-w-3xl">
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+          <!-- Header -->
+          <div class="bg-blue-600 text-white px-6 py-3">
+            <h3 class="text-lg font-semibold flex items-center gap-2">
+              <i class="fas fa-plus-circle"></i>
+              Ajouter une nouvelle image
+            </h3>
+          </div>
+  
+          <!-- Body -->
+          <div class="p-6">
+            <form (ngSubmit)="uploadImage()" #uploadForm="ngForm" class="space-y-5">
+              <!-- Libellé -->
+              <div>
+                <label for="libelle" class="block font-medium mb-1">
+                  <i class="fas fa-tag mr-1"></i>
+                  Libellé de l'image *
+                </label>
+                <input 
+                  type="text"
+                  id="libelle"
+                  name="libelle"
+                  [(ngModel)]="libelle"
+                  required
+                  maxlength="100"
+                  placeholder="Entrez le libellé de l'image"
+                  class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <p class="text-gray-500 text-sm mt-1">
+                  Le libellé doit contenir entre 1 et 100 caractères
+                </p>
+              </div>
+  
+              <!-- Appartement ID -->
+              <div>
+                <label for="appartementSelect" class="block font-medium mb-1">
+                <i class="fas fa-building mr-1"></i>
+                    Sélectionner un appartement *
+                </label>
+
+                <select 
+                id="appartementSelect"
+                name="appartementSelect"
+                [(ngModel)]="appartementId"
+                required
+                class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <option value="" disabled selected>-- Choisir un appartement --</option>
+                <option *ngFor="let app of appartements" [value]="app.id">
+                {{ app.nom }}
+                </option>
+              </select>
+            </div>
+              
+              <!-- Zone de sélection de fichier -->
+              <div>
+                <label class="block font-medium mb-1">
+                  <i class="fas fa-image mr-1"></i>
+                  Sélectionner une image *
+                </label>
+  
+                <!-- Zone Drag & Drop -->
+                <div 
+                  class="upload-zone border-2 border-dashed rounded-lg p-6 text-center transition-all duration-300 cursor-pointer"
+                  [class.border-blue-600]="!dragOver"
+                  [class.border-green-600]="dragOver"
+                  [class.bg-gray-50]="dragOver"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                  (drop)="onDrop($event)"
+                >
+                  <!-- Placeholder -->
+                  <div *ngIf="!selectedFile">
+                    <i class="fas fa-cloud-upload-alt text-gray-400 text-4xl mb-3"></i>
+                    <p class="text-gray-500 mb-2">
+                      Glissez-déposez votre image ici ou cliquez pour sélectionner
+                    </p>
+                    <p class="text-gray-400 text-sm mb-3">
+                      Formats supportés: JPG, PNG, GIF, WebP (max 5MB)
+                    </p>
+                    <input 
+                      type="file"
+                      id="fileInput"
+                      class="hidden"
+                      accept="image/*"
+                      (change)="onFileSelected($event)"
+                    />
+                    <label for="fileInput" class="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 cursor-pointer">
+                      <i class="fas fa-folder-open mr-2"></i>
+                      Choisir un fichier
+                    </label>
+                  </div>
+  
+                  <!-- Aperçu -->
+                  <div *ngIf="selectedFile" class="flex items-center gap-4">
+                    <img [src]="previewUrl" class="max-h-40 rounded object-cover" alt="Aperçu" />
+                    <div class="text-left">
+                      <h6 class="font-medium">{{ selectedFile.name }}</h6>
+                      <p class="text-gray-500 text-sm">
+                        Taille: {{ (selectedFile!.size / 1024 / 1024).toFixed(2) }} MB
+                      </p>
+                      <p class="text-gray-500 text-sm mb-2">
+                        Type: {{ selectedFile.type }}
+                      </p>
+                      <button 
+                        type="button"
+                        class="px-3 py-1 text-sm border border-red-500 text-red-500 rounded hover:bg-red-50"
+                        (click)="removePreview()"
+                      >
+                        <i class="fas fa-trash mr-1"></i> Supprimer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Actions -->
+              <div class="flex justify-between items-center">
+                <button 
+                  type="button"
+                  routerLink="/appartement"
+                  class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 flex items-center gap-2"
+                >
+                  <i class="fas fa-arrow-left"></i> Retour à la liste d'appartement
+                </button>
+  
+                <button 
+                  type="submit"
+                  [disabled]="!uploadForm.valid || !selectedFile || isUploading"
+                  class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                >
+                  <span *ngIf="!isUploading">
+                    <i class="fas fa-upload"></i> Uploader l'image
+                  </span>
+                  <span *ngIf="isUploading">
+                    <i class="fas fa-spinner fa-spin"></i> Upload en cours...
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Liste des images -->
+
+<div class="p-6 bg-gray-50 min-h-screen">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
+    📸 Liste des images d’appartements
+  </h2>
+
+  <div class="overflow-x-auto shadow-lg rounded-xl bg-white">
+    <table class="min-w-full text-sm text-left text-gray-600">
+      <thead class="bg-indigo-600 text-white text-sm uppercase">
+        <tr>
+          <th class="px-6 py-3">ID</th>
+          <th class="px-6 py-3">Libellé</th>
+          <th class="px-6 py-3">Nom du fichier</th>
+          <th class="px-6 py-3">Aperçu</th>
+          <th class="px-6 py-3 text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let image of images"
+          class="border-b hover:bg-indigo-50 transition duration-200"
+        >
+          <td class="px-6 py-4 font-semibold text-gray-800">{{ image.id }}</td>
+          <td class="px-6 py-4">{{ image.libelle }}</td>
+          <td class="px-6 py-4">{{ image.nomFichier }}</td>
+          <td class="px-6 py-4">
+            <img
+              [src]="image.previewUrl"
+              alt="Image"
+              class="rounded-lg shadow-md w-20 h-16 object-cover border border-gray-200"
+            />
+          </td>
+          <td class="px-6 py-4 flex justify-center gap-2">
+            <!-- Modifier -->
+            <button
+              (click)="editImageAppart(image)"
+              class="px-4 py-2 text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg shadow-md transition duration-200"
+            >
+              Modifier
+            </button>
+            <!-- Supprimer -->
+            <button
+              (click)="deleteImageAppart(image.id)"
+              class="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-lg shadow-md transition duration-200"
+            >
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

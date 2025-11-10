@@ -12,6 +12,7 @@ export interface VehiculeDTO {
   prix: number;
   carburant: Carburant;
   statut: StatutVehicule;
+  publie?:boolean;
   type: TypeVehicule;
   images?: ImageDTOv[]; // Liste des images associées
   createdAt?: string;

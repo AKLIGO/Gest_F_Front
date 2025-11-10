@@ -1,10 +1,10 @@
-import { Component, signal, computed, HostListener, OnInit  } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
-import { UtilisateurService } from '../../../services/utilisateur-service';
 import { Role } from '../../../interfaces/Role';
+import { UtilisateurService } from '../../../services/utilisateur-service';
 import { MenuItem } from './MenuItem';
-import { FULL_MENU, PROPRIETAIRE_MENU } from './menu-data'; // ✅ importation des menus
+import { CLIENT_MENU, FULL_MENU, PROPRIETAIRE_MENU } from './menu-data'; // ✅ importation des menus
 
 @Component({
   selector: 'app-side-bar',
@@ -47,9 +47,9 @@ export class SideBar implements OnInit {
     if (this.utilisateurService.isInitializing()) {
       return false;
     }
-    
+
     const user = this.utilisateurService.currentUser();
-    return user?.roles?.some((r: Role) => ['ADMIN', 'PROPRIETAIRE'].includes(r.name)) || false;
+    return user?.roles?.some((r: Role) => ['ADMIN', 'PROPRIETAIRE','CLIENT'].includes(r.name)) || false;
   }
 
   /** 🔹 Vérifie si l'application est en cours d'initialisation */
@@ -59,12 +59,26 @@ export class SideBar implements OnInit {
 
   /** 🔹 Retourne le menu selon le rôle */
   getMenu(): MenuItem[] {
-    const user = this.utilisateurService.currentUser();
-    if (!user || !user.roles) return [];
-    if (user.roles.some(r => r.name === 'ADMIN')) return FULL_MENU;
-    if (user.roles.some(r => r.name === 'PROPRIETAIRE')) return PROPRIETAIRE_MENU;
-    return [];
+  const user = this.utilisateurService.currentUser();
+  if (!user || !user.roles) return [];
+
+  let menu: MenuItem[] = [];
+
+  // Si l'utilisateur est ADMIN → menu complet + client
+  if (user.roles.some(r => r.name === 'ADMIN')) {
+    menu = FULL_MENU.concat(CLIENT_MENU);
   }
+  // Si l'utilisateur est PROPRIETAIRE → son menu + client
+  else if (user.roles.some(r => r.name === 'PROPRIETAIRE')) {
+    menu = PROPRIETAIRE_MENU.concat(CLIENT_MENU);
+  }
+  // Si l'utilisateur est CLIENT uniquement
+  else if (user.roles.some(r => r.name === 'CLIENT')) {
+    menu = CLIENT_MENU;
+  }
+
+  return menu;
+}
 
   /** 🔹 Vérifie le rôle spécifique */
   hasRole(roleName: string): boolean {

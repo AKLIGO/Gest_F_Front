@@ -29,9 +29,13 @@ import { ImageVehiP } from './pages/Proprietaire/Biens/image-vehi-p/image-vehi-p
 import { GestionsRoleUtilisateur } from './pages/Parametre/Admin/gestions-role-utilisateur/gestions-role-utilisateur';
 import { ProfilByUtilisateur } from './pages/Parametre/Admin/profil-by-utilisateur/profil-by-utilisateur';
 import { ListUtilisateurs } from './pages/Parametre/Admin/list-utilisateurs/list-utilisateurs';
+import { VoirReservationComponent } from './pages/HistriqueClient/voir-reservation/voir-reservation.component';
+import { VoirReservationVehicComponent } from './pages/HistriqueClient/voir-reservation-vehic/voir-reservation-vehic.component';
+import { About } from './pages/about/about';
 
 export const routes: Routes = [
     {path:'contact', component:Contact},
+    {path:'about', component:About},
     {path:'login', component:Login},
     {path:'register',component:Register},
     {path:'appartement', component:Appartement},
@@ -39,23 +43,23 @@ export const routes: Routes = [
     {path:'', component:Home},
 
 
-    
+
     // {path:'biens', component:GestionDesBiens},
     // {path:'image', component:Image},
     // {path:'immeuble', component:Immeuble},
     // {path:'reservationsApp', component:Reservation},
-    
+
     // {path:'activate-account', component:ActivateAccount},
     // {path:'paiementAppartement', component:Paiement},
     // {path:'gestionVehicules', component:Vehicules},
-    
+
     // {path:'paiement-by-reservation/:reservationId', component:PaiementByReservation},
     // {path:'reservationVehicule', component:ReservationVehicule},
     // {path:'paiementVehicule', component:PaiementVehicules},
     // {path:'uploadImageVehicule', component:ImageVehicule},
 
 
-    
+
   /** 🔹 Routes ADMIN */
   { path: 'admin/biens', component: GestionDesBiens },
   { path: 'admin/image', component: Image },
@@ -85,9 +89,12 @@ export const routes: Routes = [
   { path: 'proprietaire/paiementVehicule', component: PaiementVehiP },
   { path: 'proprietaire/uploadImageVehicule', component: ImageVehiP },
 
+  /** 🔹 Routes CLIENT */
 
+  {path:'client/voirMesReservation', component:VoirReservationComponent},
+  {path:'client/voirReservationVeh', component:VoirReservationVehicComponent},
 
     { path: '**', redirectTo: '' },
-    
+
 
 ];

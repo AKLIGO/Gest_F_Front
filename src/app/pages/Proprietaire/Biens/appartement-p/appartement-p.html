@@ -242,6 +242,10 @@
                 <div class="p-3 bg-gray-50 rounded-lg">{{ selectedAppartement.superficie }}</div>
               </div>
               <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Localisation</label>
+                <div class="p-3 bg-gray-50 rounded-lg">{{ selectedAppartement.localisation}}</div>
+              </div>
+              <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Nombre de pièces</label>
                 <div class="p-3 bg-gray-50 rounded-lg">{{ selectedAppartement.nbrDePieces }}</div>
               </div>
@@ -299,13 +303,25 @@
                 L'adresse est requise.
               </div>
             </div>
+
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-gray-700">
+                <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Localisation *
+              </label>
+              <input type="text" formControlName="localisation" placeholder="inserer le lien google map"
+                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
+              <div *ngIf="appartementForm.get('localisation')?.invalid && appartementForm.get('localisation')?.touched" class="text-red-500 text-sm flex items-center">
+                <i class="fas fa-exclamation-circle mr-1"></i>
+                Localisation est requise.
+              </div>
+            </div>
           </div>
 
           <!-- Prix et Superficie -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>Prix mensuel (FCFA) *
+                <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>Prix Journalier (FCFA) *
               </label>
               <input type="number" formControlName="prix" placeholder="Ex: 50000"
                      class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">

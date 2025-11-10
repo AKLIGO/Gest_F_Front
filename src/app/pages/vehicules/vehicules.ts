@@ -120,4 +120,18 @@ export class Vehicules implements OnInit {
   this.selectedVehicule = undefined;
 }
 
+publierVehicule(id: number, publie: boolean) {
+    this.vehiculeService.autoriserAffichage(id, publie).subscribe({
+      next: (updated) => {
+        const idx = this.vehicules.findIndex(v => v.id === updated.id);
+        if (idx !== -1) {
+          this.vehicules[idx] = { ...this.vehicules[idx], ...updated };
+        }
+        this.message = publie ? 'Véhicule publié avec succès.' : 'Véhicule dépublié avec succès.';
+        this.loadVehicules();
+      },
+      error: (err) => console.error('Erreur lors du changement de publication', err)
+});
+}
+
 }

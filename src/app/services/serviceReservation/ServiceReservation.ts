@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ReservationRequest } from '../../interfaces/gestions/Reservations/ReservationRequest';
 import { Reservations } from '../../interfaces/gestions/Reservations/Reservations';
 import { ReservationResponseDTO } from '../../interfaces/gestions/Reservations/ReservationResponseDTO';
-import { ReservationRequestVehi } from '../../interfaces/gestions/Reservations/ReservationRequestVehi';  
+import { ReservationRequestVehi } from '../../interfaces/gestions/Reservations/ReservationRequestVehi';
 import { ReservationResponseVehi } from '../../interfaces/gestions/Reservations/ReservationResponseVehi';
 @Injectable({
   providedIn: 'root'
@@ -38,8 +38,8 @@ export class ServiceReservation {
    */
   getAllReservationsVehi(): Observable<ReservationResponseVehi[]> {
     return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/vehicules`);
-  } 
-   
+  }
+
 
   /**
    * Supprimer une réservation par son ID
@@ -52,7 +52,7 @@ export class ServiceReservation {
   /**
    * crrer la reservation d'un véhicule
    */
-   
+
   createReservationVehi(request: ReservationRequestVehi): Observable<ReservationResponseVehi> {
     return this.http.post<ReservationResponseVehi>(this.apiUrls, request);
   }
@@ -67,17 +67,17 @@ export class ServiceReservation {
     return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/vehicules`);
   }
 
-  // Récupérer les réservations d'un propriétaire spécifique pour véhicules
+  //Vehi Récupérer les réservations d'un propriétaire spécifique pour véhicules
   getReservationsVehiByProprietaire(proprietaireId: number): Observable<ReservationResponseVehi[]> {
     return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/proprietaire/${proprietaireId}`);
   }
 
-  // Récupérer les réservations de véhicules de l'utilisateur connecté
+  //Vehi Récupérer les réservations de véhicules de l'utilisateur connecté
   getMesReservationsVehicules(): Observable<ReservationResponseVehi[]> {
     return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/mes-reservations-vehicules`);
   }
 
-  // Service pour récupérer les réservations du propriétaire connecté
+  //App Service pour récupérer les réservations du propriétaire connecté
 getReservationsByCurrentUser(): Observable<ReservationResponseDTO[]> {
   return this.http.get<ReservationResponseDTO[]>(`${this.apiUrl}/mes-reservations`);
 }
@@ -88,4 +88,34 @@ getReservationsByProprietaire(proprietaireId: number): Observable<ReservationRes
 }
 
 
+
+
+  // 🔹 Réservations appartements de l'utilisateur connecté
+  getAppartementsCurrentUser(): Observable<ReservationResponseDTO[]> {
+    return this.http.get<ReservationResponseDTO[]>(`${this.apiUrl}/appartements/me`);
+  }
+
+
+
+  // 🔹 Réservations appartements d'un utilisateur spécifique
+  getAppartementsByUser(userId: number): Observable<ReservationResponseDTO[]> {
+    return this.http.get<ReservationResponseDTO[]>(`${this.apiUrl}/appartements/user/${userId}`);
+  }
+
+
+
+    // 🔹 Réservations véhicules de l'utilisateur connecté
+  getVehiculesCurrentUser(): Observable<ReservationResponseVehi[]> {
+    return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/vehicules/me`);
+  }
+
+    getVehiculesCurrentUserP(): Observable<ReservationResponseVehi[]> {
+    return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/vehicules/mes`);
+  }
+
+
+    // 🔹 Réservations véhicules d'un utilisateur spécifique
+  getVehiculesByUser(userId: number): Observable<ReservationResponseVehi[]> {
+    return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/vehicules/user/${userId}`);
+  }
 }

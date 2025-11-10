@@ -1,14 +1,13 @@
+import { animate, style, transition, trigger } from '@angular/animations';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ServiceApp } from '../../services/serviceApp/service-app';
-import { ServiceImage } from '../../services/servicesImage/service-image';
-import { ServiceReservation } from '../../services/serviceReservation/ServiceReservation';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
 import { AppartementDTO } from '../../interfaces/gestions/Appartement/AppartementDTO';
 import { StatutAppartement } from '../../interfaces/gestions/Appartement/StatutAppartement';
 import { TypeAppartement } from '../../interfaces/gestions/Appartement/TypeAppartement';
-import { trigger, transition, style, animate } from '@angular/animations';
+import { ServiceApp } from '../../services/serviceApp/service-app';
+import { ServiceReservation } from '../../services/serviceReservation/ServiceReservation';
+import { ServiceImage } from '../../services/servicesImage/service-image';
 @Component({
   selector: 'app-appartement',
   standalone: true,
@@ -34,6 +33,12 @@ export class Appartement implements OnInit {
   StatutAppartement = StatutAppartement;
   TypeAppartement = TypeAppartement;
 
+  searchAdresse: string = '';
+minPrix: number | null = null;
+maxPrix: number | null = null;
+appartementss: AppartementDTO[] = [];
+filteredAppartements: AppartementDTO[] = [];
+
   reservationForm = {
     dateDebut: '',
     dateFin: ''
@@ -49,11 +54,32 @@ export class Appartement implements OnInit {
     this.serviceApp.getAllAppartementDto().subscribe({
       next: (data) => {
         this.appartements = data;
+        this.filteredAppartements = [...data];
         this.prepareCardImage(); // préparer les images pour affichage
       },
       error: (err) => console.error('Erreur chargement appartements:', err)
     });
   }
+
+filtrerAppartements() {
+  this.filteredAppartements = this.appartements.filter(appart => {
+    const correspondAdresse = this.searchAdresse
+      ? appart.adresse?.toLowerCase().includes(this.searchAdresse.toLowerCase())
+      : true;
+
+    const correspondPrixMin = this.minPrix != null ? appart.prix >= this.minPrix : true;
+    const correspondPrixMax = this.maxPrix != null ? appart.prix <= this.maxPrix : true;
+
+    return correspondAdresse && correspondPrixMin && correspondPrixMax;
+  });
+}
+
+reinitialiserFiltres() {
+  this.searchAdresse = '';
+  this.minPrix = null;
+  this.maxPrix = null;
+  this.filteredAppartements = [...this.appartements];
+}
 
   showReservationForm(appart: AppartementDTO) {
     if (this.selectedAppartementForReservation?.id === appart.id) {
@@ -137,4 +163,7 @@ export class Appartement implements OnInit {
       }
     });
   }
+
+
+
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VehiculeDTO } from '../../interfaces/gestions/Vehicules/VehiculeDTO';
 import { ImageDTOv } from '../../interfaces/gestions/image/ImageDTOv';
@@ -11,6 +11,16 @@ export class VehiculeService {
   private baseUrl = 'http://localhost:8082/api/vehicules'; // ton backend Spring
 
   constructor(private http: HttpClient) {}
+
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('access_token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    });
+  }
+  
 
   // Ajouter un véhicule
   addVehicule(vehicule: VehiculeDTO): Observable<VehiculeDTO> {
@@ -65,5 +75,12 @@ export class VehiculeService {
   // Récupérer mes véhicules (pour l'utilisateur connecté)
   getMesVehicules(): Observable<VehiculeDTO[]> {
     return this.http.get<VehiculeDTO[]>(`${this.baseUrl}/mes-vehicules`);
+  }
+
+  /**
+   * Publier / dépublier un véhicule (autoriser l'affichage)
+   */
+  autoriserAffichage(id: number, publie: boolean): Observable<VehiculeDTO> {
+    return this.http.put<VehiculeDTO>(`${this.baseUrl}/${id}/publication?publie=${publie}`, {}, { headers: this.getHeaders() });
   }
 }

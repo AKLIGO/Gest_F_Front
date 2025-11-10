@@ -76,20 +76,21 @@ export class ReservationVehicule implements OnInit{
     }
   }
 
-  // validateReservation(id:number): void{
-  //     if(confirm('Voulez-vous vraiment valider cette réservation ?')){
-  //       this.reservationService.updateReservationStatus(id,StatusReservation.VALIDEE).subscribe({
-  //         next: (updatedReservation) => {
-  //           const index = this.reservationVehicule.findIndex(r => r.id ===id);
-  //           if(index !== -1){
-  //             this.reservationVehicule[index] = updatedReservation;
-  //             this.updatePagedReservations();
-  //           }
-  //         },
-  //         error: (err) => console.error('Erreur validation réservation:', err)
-  //       });
+  validateReservation(id:number): void{
+      if(confirm('Voulez-vous vraiment valider cette réservation ?')){
+        this.reservationService.updateReservationVehiStatus(id, StatusReservation.VALIDEE)
+              .subscribe({
+          next: (updatedReservation) => {
+            const index = this.reservationVehicule.findIndex(r => r.id ===id);
+            if(index !== -1){
+              this.reservationVehicule[index] = updatedReservation;
+              this.updatePagedReservations();
+            }
+          },
+          error: (err) => console.error('Erreur validation réservation:', err)
+        });
 
-  // }
+  }
 
-//}
+}
 }

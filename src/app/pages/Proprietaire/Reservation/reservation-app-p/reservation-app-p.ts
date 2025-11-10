@@ -26,14 +26,14 @@ export class ReservationAppP implements OnInit {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
-  
+
   // Formulaires réactifs
   reservationForm: FormGroup;
   showModal = false;
   selectedReservation: ReservationResponseDTO | null = null;
   isEditMode = false;
   editingReservationId?: number;
-  
+
   // Options pour les statuts
   statutOptions = Object.values(StatusReservation);
 
@@ -67,12 +67,12 @@ export class ReservationAppP implements OnInit {
 
   loadReservations(): void {
     if (!this.currentUser?.id) return;
-    
+
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     const cacheKey = `reservations_appartements_${this.currentUser.id}`;
-    
+
     this.cacheService.get(
       cacheKey,
       () => this.reservationService.getReservationsByCurrentUser().pipe(
@@ -96,7 +96,7 @@ export class ReservationAppP implements OnInit {
 
   loadAppartements(): void {
     const cacheKey = 'appartements_disponibles';
-    
+
     this.cacheService.get(
       cacheKey,
       () => this.serviceApp.getAllAppartementDto().pipe(
@@ -145,23 +145,24 @@ export class ReservationAppP implements OnInit {
     this.isEditMode = true;
     this.selectedReservation = reservation;
     this.editingReservationId = reservation.id;
-    
+
     // Trouver l'appartement correspondant
-    const appartement = this.appartements.find(a => 
+    const appartement = this.appartements.find(a =>
       a.nom === reservation.appartementNom && a.adresse === reservation.appartementAdresse
     );
-    
+
     this.reservationForm.patchValue({
       dateDebut: reservation.dateDebut.split('T')[0], // Convertir de ISO à YYYY-MM-DD
       dateFin: reservation.dateFin.split('T')[0],
       appartementId: appartement?.id || null
     });
-    
+
     this.showModal = true;
   }
 
   openDetailsModal(reservation: ReservationResponseDTO): void {
     this.selectedReservation = reservation;
+    this.isEditMode = false;
     this.showModal = true;
   }
 
@@ -176,7 +177,7 @@ export class ReservationAppP implements OnInit {
   submitForm(): void {
     if (this.reservationForm.valid) {
       const formData = this.reservationForm.value;
-      
+
       if (this.isEditMode && this.editingReservationId) {
         this.updateReservationStatus(this.editingReservationId, 'VALIDEE');
       } else {
@@ -225,13 +226,13 @@ export class ReservationAppP implements OnInit {
 
   validateReservation(id: number): void {
     if (!confirm('Voulez-vous valider cette réservation ?')) return;
-    
+
     this.updateReservationStatus(id, 'VALIDEE');
   }
 
   deleteReservation(id: number): void {
     if (!confirm('Voulez-vous vraiment supprimer cette réservation ?')) return;
-    
+
     this.reservationService.deleteReservation(id).subscribe({
       next: () => {
         this.successMessage = 'Réservation supprimée avec succès';
