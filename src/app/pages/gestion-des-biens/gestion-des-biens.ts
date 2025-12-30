@@ -56,8 +56,19 @@ export class GestionDesBiens implements OnInit {
   }
 
   getImmeubleNom(app: AppartementCreate): string {
-    const immeuble = this.immeubleOptions.find(i => i.id === app.immeubleId);
-    return immeuble ? immeuble.nom : 'N/A';
+    if (!app.immeubleId) {
+      return 'Non défini';
+    }
+
+    if (!this.immeubleOptions || this.immeubleOptions.length === 0) {
+      return 'Chargement...';
+    }
+
+    const immeuble = this.immeubleOptions.find(i => 
+      i.id === app.immeubleId || i.id === Number(app.immeubleId)
+    );
+    
+    return immeuble ? immeuble.nom : 'Non trouvé';
   }
 
   ngOnInit(): void {

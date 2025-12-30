@@ -49,7 +49,7 @@ export const routes: Routes = [
     // {path:'immeuble', component:Immeuble},
     // {path:'reservationsApp', component:Reservation},
 
-    // {path:'activate-account', component:ActivateAccount},
+    {path:'activate-account', component:ActivateAccount},
     // {path:'paiementAppartement', component:Paiement},
     // {path:'gestionVehicules', component:Vehicules},
 

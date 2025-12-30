@@ -83,4 +83,35 @@ export class VehiculeService {
   autoriserAffichage(id: number, publie: boolean): Observable<VehiculeDTO> {
     return this.http.put<VehiculeDTO>(`${this.baseUrl}/${id}/publication?publie=${publie}`, {}, { headers: this.getHeaders() });
   }
+
+  /**
+   * 17-12-2025
+ * 🔎 Rechercher des véhicules (marque + prix)
+ */
+rechercherVehicules(
+  marque?: string,
+  prixMin?: number,
+  prixMax?: number
+): Observable<VehiculeDTO[]> {
+
+  let params: any = {};
+
+  if (marque && marque.trim() !== '') {
+    params.marque = marque;
+  }
+
+  if (prixMin !== undefined && prixMin !== null) {
+    params.prixMin = prixMin;
+  }
+
+  if (prixMax !== undefined && prixMax !== null) {
+    params.prixMax = prixMax;
+  }
+
+  return this.http.get<VehiculeDTO[]>(
+    `${this.baseUrl}/recherche`,
+    { params }
+  );
+}
+
 }

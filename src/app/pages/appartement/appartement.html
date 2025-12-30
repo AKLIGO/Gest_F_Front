@@ -1,159 +1,209 @@
-<!-- Hero Section -->
-<section class="relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20">
-  <div class="absolute inset-0 bg-white/20"></div>
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h1 class="text-5xl font-bold text-gray-900 mb-6">
-      Nos <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Appartements</span>
-    </h1>
-    <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-      Découvrez notre sélection d'appartements modernes et confortables, parfaitement situés pour votre séjour
-    </p>
-    <div class="flex justify-center">
-      <div class="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-    </div>
-  </div>
-</section>
-
-<!-- Filtres et recherche -->
-<!-- 🔍 Filtres et recherche -->
-<section class="py-8 bg-white border-b border-gray-200">
+<!-- Hero Section Premium -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-12">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
 
-      <!-- Recherche par adresse -->
-      <div class="relative">
-        <input type="text"
-               [(ngModel)]="searchAdresse"
-               (ngModelChange)="filtrerAppartements()"
-               placeholder="Rechercher par adresse..."
-               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64">
-        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+    <!-- En-tête élégant -->
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl shadow-2xl mb-6 transform hover:scale-110 transition-transform duration-300">
+        <i class="fas fa-building text-white text-3xl"></i>
       </div>
-
-      <!-- Prix minimum -->
-      <input type="number"
-             [(ngModel)]="minPrix"
-             (ngModelChange)="filtrerAppartements()"
-             placeholder="Prix min"
-             class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 w-32">
-
-      <!-- Prix maximum -->
-      <input type="number"
-             [(ngModel)]="maxPrix"
-             (ngModelChange)="filtrerAppartements()"
-             placeholder="Prix max"
-             class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 w-32">
-
-      <!-- Bouton réinitialiser -->
-      <button (click)="reinitialiserFiltres()"
-              class="px-6 py-2 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition-all">
-        <i class="fas fa-undo mr-2"></i>Réinitialiser
-      </button>
+      <h1 class="text-5xl font-extrabold text-gray-900 mb-4">
+        Nos <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Appartements</span>
+      </h1>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Découvrez notre collection d'appartements modernes et confortables
+      </p>
     </div>
 
-    <!-- Compteur -->
-    <div class="flex items-center space-x-2 text-sm text-gray-600 mt-4">
-      <i class="fas fa-home text-blue-500"></i>
-      <span>{{ filteredAppartements.length }} appartements trouvés</span>
+    <!-- Barre de recherche premium -->
+    <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 mb-12">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
+          <i class="fas fa-search text-white text-lg"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900">Rechercher un appartement</h3>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <!-- Adresse -->
+        <div class="relative group">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>Adresse
+          </label>
+          <input
+            type="text"
+            placeholder="Quartier, rue..."
+            [(ngModel)]="searchAdresse"
+            class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+          />
+          <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
+            <i class="fas fa-home"></i>
+          </div>
+        </div>
+
+        <!-- Prix min -->
+        <div class="relative group">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Prix minimum
+          </label>
+          <input
+            type="number"
+            placeholder="0"
+            [(ngModel)]="minPrix"
+            class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+          />
+          <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
+            <i class="fas fa-coins"></i>
+          </div>
+        </div>
+
+        <!-- Prix max -->
+        <div class="relative group">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Prix maximum
+          </label>
+          <input
+            type="number"
+            placeholder="500000"
+            [(ngModel)]="maxPrix"
+            class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+          />
+          <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
+            <i class="fas fa-coins"></i>
+          </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex flex-col gap-2 md:pt-8 md:col-span-2">
+          <button
+            (click)="rechercherAppartements()"
+            class="group relative flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105 shadow-lg">
+            <i class="fas fa-search mr-2"></i>
+            Rechercher
+          </button>
+
+          <button
+            (click)="reinitialiserFiltres()"
+            class="flex items-center justify-center px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200">
+            <i class="fas fa-redo mr-2"></i>
+            Réinitialiser
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
 
 
-<!-- Grille des appartements -->
-<section class="py-16 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+
+    <!-- Grille des appartements moderne -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      <div *ngFor="let appart of appartements; trackBy: trackByAppartementId"
-           class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-2">
+      <div *ngFor="let appart of filteredAppartements; trackBy: trackByAppartementId"
+           class="group bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden border border-white/20">
 
         <!-- Image avec overlay -->
         <div class="relative overflow-hidden">
           <img [src]="getImageUrl(appart.images?.[0])"
                [alt]="appart.nom"
-               class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
-
-          <!-- Overlay avec informations -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div class="absolute bottom-4 left-4 right-4 text-white">
-              <div class="flex items-center space-x-2 mb-2">
-                <i class="fas fa-map-marker-alt text-sm"></i>
-                <span class="text-sm font-medium">{{ appart.adresse }}</span>
-              </div>
-            </div>
-          </div>
+               class="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500">
 
           <!-- Badge statut -->
           <div class="absolute top-4 right-4">
-            <span class="px-3 py-1 text-xs font-semibold rounded-full"
+            <span class="px-4 py-2 text-sm font-bold rounded-full shadow-lg backdrop-blur-sm"
                   [ngClass]="{
-                    'bg-green-500 text-white': appart.statut === StatutAppartement.DISPONIBLE,
-                    'bg-red-500 text-white': appart.statut !== StatutAppartement.DISPONIBLE
+                    'bg-green-500/90 text-white': appart.statut === StatutAppartement.DISPONIBLE,
+                    'bg-red-500/90 text-white': appart.statut !== StatutAppartement.DISPONIBLE
                   }">
-            {{ appart.statut }}
-          </span>
+              <i class="fas fa-circle text-xs mr-1"></i>{{ appart.statut }}
+            </span>
           </div>
 
           <!-- Badge type -->
           <div class="absolute top-4 left-4">
-            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500 text-white">
-              {{ appart.type }}
+            <span class="px-4 py-2 text-sm font-bold rounded-full bg-blue-500/90 text-white shadow-lg backdrop-blur-sm">
+              <i class="fas fa-home text-xs mr-1"></i>{{ appart.type }}
             </span>
+          </div>
+
+          <!-- Gradient overlay -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          <!-- Info adresse au hover -->
+          <div class="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-map-marker-alt"></i>
+              <span class="text-sm font-medium line-clamp-1">{{ appart.adresse }}</span>
+            </div>
           </div>
         </div>
 
         <!-- Contenu de la carte -->
         <div class="p-6">
-          <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+          <h3 class="text-2xl font-bold text-gray-900 mb-2 line-clamp-1">
             {{ appart.nom }}
           </h3>
 
-          <div class="flex items-center text-gray-600 mb-3">
-            <i class="fas fa-bed text-blue-500 mr-2"></i>
-            <span class="text-sm">{{ appart.nbrDePieces }} pièces</span>
-            <span class="mx-2">•</span>
-            <i class="fas fa-ruler-combined text-blue-500 mr-2"></i>
-            <span class="text-sm">{{ appart.superficie }} m²</span>
+          <div class="flex items-center text-gray-600 mb-4 text-sm">
+            <div class="flex items-center mr-4">
+              <i class="fas fa-bed text-blue-500 mr-1"></i>
+              <span>{{ appart.nbrDePieces }} pièces</span>
+            </div>
+            <div class="flex items-center">
+              <i class="fas fa-ruler-combined text-blue-500 mr-1"></i>
+              <span>{{ appart.superficie }} m²</span>
+            </div>
           </div>
 
-          <div class="flex items-center justify-between mb-4">
-            <div class="text-2xl font-bold text-gray-900">
+          <!-- Prix en vedette -->
+          <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-4 mb-4">
+            <div class="text-sm text-gray-600 mb-1">Prix de location</div>
+            <div class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
               {{ appart.prix | currency:'XOF' }}
             </div>
-            <div class="text-sm text-gray-500">/ jour</div>
+            <div class="text-xs text-gray-500 mt-1">par mois</div>
           </div>
 
-          <!-- Actions -->
-          <div class="space-y-3">
-            <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105"
-                    (click)="openDetails(appart)">
-              <i class="fas fa-eye mr-2"></i>Voir les détails
-            </button>
+          <!-- Bouton détails -->
+          <button 
+            class="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 mb-3"
+            (click)="openDetails(appart)">
+            <i class="fas fa-eye"></i>
+            Voir les détails
+          </button>
 
-            <button class="w-full border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all duration-200"
-                    (click)="showReservationForm(appart)">
-              <i class="fas fa-calendar-plus mr-2"></i>Réserver
-            </button>
-          </div>
-
-          <!-- Formulaire de réservation -->
+          <!-- Bouton réserver -->
+          <button 
+            class="w-full py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2"
+            (click)="showReservationForm(appart)">
+            <i class="fas fa-calendar-plus"></i>
+            Réserver
+          </button>
+          <!-- Formulaire de réservation moderne -->
           <div *ngIf="selectedAppartementForReservation?.id === appart.id"
-               class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h4 class="font-semibold text-blue-900 mb-3">Réserver cet appartement</h4>
+               class="mt-4 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-2xl p-5 shadow-lg transform animate-slideDown">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                <i class="fas fa-calendar-check text-white"></i>
+              </div>
+              <h4 class="font-bold text-gray-900">Réserver cet appartement</h4>
+            </div>
             <div class="space-y-3">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <i class="fas fa-calendar-day mr-1 text-blue-600"></i>Date de début
+                </label>
                 <input type="date"
                        [(ngModel)]="reservationForm.dateDebut"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                       class="w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                  <i class="fas fa-calendar-day mr-1 text-blue-600"></i>Date de fin
+                </label>
                 <input type="date"
                        [(ngModel)]="reservationForm.dateFin"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                       class="w-full px-4 py-2 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
               </div>
-              <button class="w-full bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              <button class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
                       (click)="submitReservation(appart)">
                 <i class="fas fa-check mr-2"></i>Confirmer la réservation
               </button>
@@ -162,106 +212,130 @@
         </div>
       </div>
     </div>
+
+    <!-- Message aucun appartement avec design moderne -->
+    <div *ngIf="filteredAppartements.length === 0" class="text-center py-20">
+      <div class="mx-auto w-32 h-32 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-6">
+        <i class="fas fa-home text-6xl text-gray-400"></i>
+      </div>
+      <h3 class="text-3xl font-bold text-gray-900 mb-4">Aucun appartement trouvé</h3>
+      <p class="text-lg text-gray-600 mb-8">Essayez de modifier vos critères de recherche pour voir plus de résultats</p>
+      <button 
+        (click)="reinitialiserFiltres()"
+        class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg">
+        <i class="fas fa-redo mr-2"></i>Réinitialiser la recherche
+      </button>
+    </div>
   </div>
-</section>
+</div>
 
-<!-- Modal Détails Amélioré -->
-<div *ngIf="selectedAppartement" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-  <div class="bg-white w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl max-h-[95vh] overflow-y-auto">
+<!-- Modal Détails Premium -->
+<div *ngIf="selectedAppartement" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fadeIn">
+  <div class="bg-white w-full max-w-5xl rounded-3xl overflow-hidden shadow-2xl max-h-[95vh] overflow-y-auto transform animate-slideUp">
 
-    <!-- Header du modal -->
-    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+    <!-- En-tête du modal avec gradient -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
       <div class="flex items-center justify-between">
-        <div>
-          <h2 class="text-3xl font-bold mb-2">{{ selectedAppartement.nom }}</h2>
-          <p class="text-blue-100 flex items-center">
-            <i class="fas fa-map-marker-alt mr-2"></i>
-            {{ selectedAppartement.adresse }}
-          </p>
+        <div class="flex-1">
+          <h2 class="text-4xl font-bold mb-3">{{ selectedAppartement.nom }}</h2>
+          <div class="flex items-center gap-2 text-blue-100">
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="text-lg">{{ selectedAppartement.adresse }}</span>
+          </div>
         </div>
         <button (click)="closeDetails()"
-                class="text-white/80 hover:text-white hover:bg-white/20 rounded-full p-2 transition-colors">
-          <i class="fas fa-times text-xl"></i>
+                class="text-white hover:bg-white/20 rounded-full p-3 transition-all duration-200">
+          <i class="fas fa-times text-2xl"></i>
         </button>
       </div>
     </div>
 
-    <!-- Images avec carousel amélioré -->
-    <div class="relative">
+    <!-- Galerie d'images premium -->
+    <div class="bg-gray-50 p-6">
       <ng-container *ngIf="(selectedAppartement.images ?? []).length > 0; else noImages">
-        <div class="relative h-96">
+        <div class="relative rounded-2xl overflow-hidden shadow-xl">
           <img [src]="getImageUrl(selectedAppartement.images[selectedImageIndex])"
-               class="w-full h-full object-cover"
+               class="w-full h-[28rem] object-cover"
                [alt]="selectedAppartement.nom ?? 'image'">
 
-          <!-- Navigation des images -->
+          <!-- Boutons de navigation -->
           <button *ngIf="(selectedAppartement.images?.length ?? 0) > 1"
                   (click)="prevImage()"
-                  class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
-            <i class="fas fa-chevron-left"></i>
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
+            <i class="fas fa-chevron-left text-blue-600 text-xl"></i>
           </button>
 
           <button *ngIf="(selectedAppartement.images?.length ?? 0) > 1"
                   (click)="nextImage()"
-                  class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
-            <i class="fas fa-chevron-right"></i>
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
+            <i class="fas fa-chevron-right text-blue-600 text-xl"></i>
           </button>
 
-          <!-- Indicateur d'images -->
-          <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 text-white text-sm px-3 py-1 rounded-full">
-            {{ selectedImageIndex + 1 }} / {{ selectedAppartement.images.length }}
+          <!-- Indicateur de position -->
+          <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white text-sm px-4 py-2 rounded-full font-medium">
+            <i class="fas fa-images mr-2"></i>{{ selectedImageIndex + 1 }} / {{ selectedAppartement.images.length }}
           </div>
 
           <!-- Badges -->
-          <div class="absolute top-4 left-4 flex space-x-2">
-            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-blue-500 text-white">
-              {{ selectedAppartement.type }}
+          <div class="absolute top-4 left-4 flex gap-2">
+            <span class="px-4 py-2 text-sm font-bold rounded-full bg-blue-500/90 text-white shadow-lg backdrop-blur-sm">
+              <i class="fas fa-home mr-1"></i>{{ selectedAppartement.type }}
             </span>
-            <span class="px-3 py-1 text-sm font-semibold rounded-full"
+            <span class="px-4 py-2 text-sm font-bold rounded-full shadow-lg backdrop-blur-sm"
                   [ngClass]="{
-                    'bg-green-500 text-white': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
-                    'bg-red-500 text-white': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
+                    'bg-green-500/90 text-white': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
+                    'bg-red-500/90 text-white': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
                   }">
-              {{ selectedAppartement.statut }}
+              <i class="fas fa-circle text-xs mr-1"></i>{{ selectedAppartement.statut }}
             </span>
           </div>
         </div>
       </ng-container>
       <ng-template #noImages>
-        <div class="h-96 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-          <div class="text-center text-gray-500">
-            <i class="fas fa-image text-4xl mb-4"></i>
-            <p class="text-lg">Aucune image disponible</p>
-          </div>
+        <div class="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl p-20 text-center">
+          <i class="fas fa-image text-7xl text-gray-400 mb-4"></i>
+          <p class="text-gray-600 font-medium text-lg">Aucune image disponible</p>
         </div>
       </ng-template>
     </div>
 
-    <!-- Contenu principal -->
+    <!-- Contenu principal moderne -->
     <div class="p-8">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Informations principales -->
         <div class="lg:col-span-2">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-blue-50 p-4 rounded-xl text-center">
-              <i class="fas fa-ruler-combined text-blue-500 text-2xl mb-2"></i>
-              <div class="text-sm text-gray-600">Superficie</div>
-              <div class="font-bold text-gray-900">{{ selectedAppartement.superficie }} m²</div>
+          <!-- Grille d'informations avec icônes colorées -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl border-2 border-blue-200 text-center transform hover:scale-105 transition-transform duration-200">
+              <div class="flex items-center justify-center w-12 h-12 bg-white rounded-lg mb-3 mx-auto">
+                <i class="fas fa-ruler-combined text-blue-600 text-2xl"></i>
+              </div>
+              <div class="text-xs text-gray-600 mb-1">Superficie</div>
+              <div class="font-bold text-gray-900 text-lg">{{ selectedAppartement.superficie }} m²</div>
             </div>
-            <div class="bg-green-50 p-4 rounded-xl text-center">
-              <i class="fas fa-bed text-green-500 text-2xl mb-2"></i>
-              <div class="text-sm text-gray-600">Pièces</div>
-              <div class="font-bold text-gray-900">{{ selectedAppartement.nbrDePieces }}</div>
+
+            <div class="bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-xl border-2 border-green-200 text-center transform hover:scale-105 transition-transform duration-200">
+              <div class="flex items-center justify-center w-12 h-12 bg-white rounded-lg mb-3 mx-auto">
+                <i class="fas fa-bed text-green-600 text-2xl"></i>
+              </div>
+              <div class="text-xs text-gray-600 mb-1">Pièces</div>
+              <div class="font-bold text-gray-900 text-lg">{{ selectedAppartement.nbrDePieces }}</div>
             </div>
-            <div class="bg-purple-50 p-4 rounded-xl text-center">
-              <i class="fas fa-home text-purple-500 text-2xl mb-2"></i>
-              <div class="text-sm text-gray-600">Type</div>
-              <div class="font-bold text-gray-900">{{ selectedAppartement.type }}</div>
+
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-xl border-2 border-purple-200 text-center transform hover:scale-105 transition-transform duration-200">
+              <div class="flex items-center justify-center w-12 h-12 bg-white rounded-lg mb-3 mx-auto">
+                <i class="fas fa-home text-purple-600 text-2xl"></i>
+              </div>
+              <div class="text-xs text-gray-600 mb-1">Type</div>
+              <div class="font-bold text-gray-900 text-sm">{{ selectedAppartement.type }}</div>
             </div>
-            <div class="bg-orange-50 p-4 rounded-xl text-center">
-              <i class="fas fa-info-circle text-orange-500 text-2xl mb-2"></i>
-              <div class="text-sm text-gray-600">Statut</div>
-              <div class="font-bold"
+
+            <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-5 rounded-xl border-2 border-orange-200 text-center transform hover:scale-105 transition-transform duration-200">
+              <div class="flex items-center justify-center w-12 h-12 bg-white rounded-lg mb-3 mx-auto">
+                <i class="fas fa-info-circle text-orange-600 text-2xl"></i>
+              </div>
+              <div class="text-xs text-gray-600 mb-1">Statut</div>
+              <div class="font-bold text-sm"
                    [ngClass]="{
                      'text-green-600': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
                      'text-red-600': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
@@ -269,52 +343,138 @@
             </div>
           </div>
 
-          <!-- Prix -->
-          <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl mb-6">
-            <div class="text-sm text-gray-600 mb-2">Prix mensuel</div>
-            <div class="text-4xl font-bold text-gray-900 mb-2">{{ selectedAppartement.prix | currency:'XOF' }}</div>
-            <div class="text-sm text-gray-500">Toutes charges comprises</div>
+          <!-- Prix en vedette -->
+          <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl p-8 mb-8 text-center">
+            <div class="text-sm text-gray-600 mb-2 font-medium">Prix de location</div>
+            <div class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-2">
+              {{ selectedAppartement.prix | currency:'XOF' }}
             </div>
+            <div class="text-sm text-gray-600">par mois - Toutes charges comprises</div>
+          </div>
 
           <!-- Description -->
-          <div *ngIf="selectedAppartement.description" class="bg-white border border-gray-200 p-6 rounded-xl">
-            <h4 class="text-lg font-semibold text-gray-900 mb-3">Description</h4>
+          <div *ngIf="selectedAppartement.description" class="bg-white border-2 border-gray-200 p-6 rounded-2xl">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                <i class="fas fa-align-left text-white"></i>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900">Description</h4>
+            </div>
             <p class="text-gray-700 leading-relaxed">{{ selectedAppartement.description }}</p>
           </div>
         </div>
 
-        <!-- Actions et contact -->
+        <!-- Actions et contact premium -->
         <div class="space-y-6">
-          <div class="bg-white border border-gray-200 p-6 rounded-xl">
-            <h4 class="text-lg font-semibold text-gray-900 mb-4">Actions</h4>
-            <div class="space-y-3">
-              <button class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105">
-                <i class="fas fa-phone mr-2"></i>Contacter
-              </button>
-              <!--<button class="w-full border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-all duration-200">
-                <i class="fas fa-calendar-plus mr-2"></i>Réserver
-              </button>-->
-              <a [href]="selectedAppartement.localisation" target="_blank"
-              class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
-              Voir sur la carte
-        </a>
+          <!-- Bouton Contact principal -->
+          <div class="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 p-6 rounded-2xl shadow-lg">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                <i class="fas fa-handshake text-white text-xl"></i>
+              </div>
+              <h4 class="text-xl font-bold text-gray-900">Contact</h4>
             </div>
+            
+            <button (click)="afficherContactAppartement(selectedAppartement.id)"
+                    class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-4 px-6 rounded-2xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-xl flex items-center justify-center gap-3">
+              <i class="fas fa-phone-alt text-xl"></i>
+              <span>Contacter le propriétaire</span>
+            </button>
+            
+            <!-- Affichage du contact avec design premium -->
+            <div *ngIf="contactProprietaire" class="mt-6 bg-blue-50 border-2 border-blue-200 rounded-2xl p-5 transform animate-slideDown">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-white"></i>
+                </div>
+                <p class="font-bold text-blue-900">Contact du propriétaire</p>
+              </div>
+              
+              <div class="space-y-4">
+                <!-- Nom -->
+                <div *ngIf="contactProprietaire.nom" class="bg-white rounded-xl p-4">
+                  <div class="flex items-center gap-3">
+                    <i class="fas fa-user-circle text-blue-600 text-xl"></i>
+                    <div>
+                      <div class="text-xs text-gray-500 mb-1">Nom</div>
+                      <div class="font-bold text-gray-900">{{ contactProprietaire.nom }}</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Email -->
+                <div *ngIf="contactProprietaire.email" class="bg-white rounded-xl p-4">
+                  <div class="flex items-center gap-3 mb-3">
+                    <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                    <div class="flex-1">
+                      <div class="text-xs text-gray-500 mb-1">Email</div>
+                      <a [href]="'https://mail.google.com/mail/?view=cm&to=' + contactProprietaire.email"
+                         target="_blank"
+                         class="text-blue-600 hover:text-blue-800 font-semibold hover:underline inline-flex items-center gap-2">
+                        {{ contactProprietaire.email }}
+                        <i class="fas fa-external-link-alt text-xs"></i>
+                      </a>
+                    </div>
+                  </div>
+                  <button (click)="copyToClipboard(contactProprietaire.email)"
+                          class="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i> Copier l'email
+                  </button>
+                  <p class="text-xs text-gray-500 mt-2 text-center italic">
+                    💡 Cliquez sur l'email pour ouvrir Gmail
+                  </p>
+                </div>
+                
+                <!-- Téléphone -->
+                <div *ngIf="contactProprietaire.telephone" class="bg-white rounded-xl p-4">
+                  <div class="flex items-center gap-3 mb-3">
+                    <i class="fas fa-phone text-blue-600 text-xl"></i>
+                    <div class="flex-1">
+                      <div class="text-xs text-gray-500 mb-1">Téléphone</div>
+                      <a [href]="'tel:' + contactProprietaire.telephone"
+                         class="text-blue-600 hover:text-blue-800 font-semibold text-lg">
+                        {{ contactProprietaire.telephone }}
+                      </a>
+                    </div>
+                  </div>
+                  <button (click)="copyToClipboard(contactProprietaire.telephone)"
+                          class="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-copy"></i> Copier le numéro
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Lien carte -->
+            <a [href]="selectedAppartement.localisation" target="_blank"
+               class="mt-4 w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-200 flex items-center justify-center gap-2">
+              <i class="fas fa-map-marked-alt"></i>
+              Voir sur la carte
+            </a>
           </div>
 
-          <div class="bg-gray-50 p-6 rounded-xl">
-            <h4 class="text-lg font-semibold text-gray-900 mb-4">Informations</h4>
-            <div class="space-y-3 text-sm">
-              <div class="flex justify-between">
-                <span class="text-gray-600">Référence:</span>
-                <span class="font-medium text-gray-900">{{ selectedAppartement.numero }}</span>
+          <!-- Informations complémentaires -->
+          <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 p-6 rounded-2xl">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-gray-700 rounded-lg flex items-center justify-center">
+                <i class="fas fa-info text-white"></i>
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Disponibilité:</span>
-                <span class="font-medium"
+              <h4 class="text-lg font-bold text-gray-900">Informations</h4>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex justify-between items-center bg-white p-3 rounded-lg">
+                <span class="text-gray-600 font-medium">Référence:</span>
+                <span class="font-bold text-gray-900">#{{ selectedAppartement.numero }}</span>
+              </div>
+              <div class="flex justify-between items-center bg-white p-3 rounded-lg">
+                <span class="text-gray-600 font-medium">Disponibilité:</span>
+                <span class="font-bold"
                       [ngClass]="{
                         'text-green-600': selectedAppartement.statut === StatutAppartement.DISPONIBLE,
                         'text-red-600': selectedAppartement.statut !== StatutAppartement.DISPONIBLE
-                      }">{{ selectedAppartement.statut }}</span>
+                      }">
+                  <i class="fas fa-circle text-xs mr-1"></i>{{ selectedAppartement.statut }}
+                </span>
               </div>
             </div>
           </div>

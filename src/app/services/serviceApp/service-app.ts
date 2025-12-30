@@ -122,5 +122,36 @@ export class ServiceApp {
         // Envoyer un corps vide JSON pour éviter 415 Unsupported Media Type avec Content-Type: application/json
         return this.http.put<AppartementCreate>(`${this.apiUrl}/${id}/publication`, {}, { headers: this.getHeaders(), params });
 }
+/**
+ * 🔎 Rechercher des appartements par adresse et intervalle de prix
+ * Endpoint PUBLIC (sans token)
+ */
+
+rechercherAppartements(
+  adresse?: string,
+  prixMin?: number,
+  prixMax?: number
+): Observable<AppartementDTO[]> {
+
+  let params = new HttpParams();
+
+  if (adresse && adresse.trim().length > 0) {
+    params = params.set('adresse', adresse);
+  }
+
+  if (prixMin !== undefined && prixMin !== null) {
+    params = params.set('prixMin', prixMin.toString());
+  }
+
+  if (prixMax !== undefined && prixMax !== null) {
+    params = params.set('prixMax', prixMax.toString());
+  }
+
+  return this.http.get<AppartementDTO[]>(
+    `${this.apiUrl}/recherche`,
+    { params }
+  );
+}
+
 
 }

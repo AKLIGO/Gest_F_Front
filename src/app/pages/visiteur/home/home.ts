@@ -9,6 +9,8 @@ import { ImagesCreate } from '../../../interfaces/gestions/image/ImagesCreate';
 import { ServiceApp } from '../../../services/serviceApp/service-app';
 import { ServiceReservation } from '../../../services/serviceReservation/ServiceReservation';
 import { ServiceImage } from '../../../services/servicesImage/service-image';
+import { ProprietaireService } from '../../../services/serviceContact/ProprietaireService';
+import { ProprietaireContactDTO } from '../../../interfaces/ProprietaireContactDTO';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -34,6 +36,7 @@ export class Home implements OnInit,OnDestroy {
   selectedImageIndex: number = 0;
 selectedAppartementForReservation?: AppartementDTO;
   selectedAppartement?: AppartementDTO;
+  contactProprietaire?: ProprietaireContactDTO;
 
   StatutAppartement = StatutAppartement;
   TypeAppartement = TypeAppartement;
@@ -42,7 +45,7 @@ selectedAppartementForReservation?: AppartementDTO;
   dateDebut: '',
   dateFin: ''
 };
-  constructor(private serviceApp: ServiceApp, private imageService:ServiceImage,private serviceReservation:ServiceReservation) {}
+  constructor(private serviceApp: ServiceApp, private imageService:ServiceImage,private serviceReservation:ServiceReservation, private proprietaireService: ProprietaireService) {}
 /**
  * affichages des images a l'accueil
  */
@@ -160,6 +163,82 @@ showReservationForm(appart: AppartementDTO) {
 
   closeDetails() {
     this.selectedAppartement = undefined;
+    this.contactProprietaire = undefined;
+  }
+
+  copyToClipboard(text: string) {
+    if (!text) {
+      alert('Aucune valeur à copier');
+      return;
+    }
+    
+    // S'assurer que c'est bien une chaîne de caractères
+    const textToCopy = String(text).trim();
+    
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      alert(`Copié : ${textToCopy}`);
+    }).catch(err => {
+      console.error('Erreur lors de la copie:', err);
+      // Fallback pour les anciens navigateurs
+      const textArea = document.createElement('textarea');
+      textArea.value = textToCopy;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert(`Copié : ${textToCopy}`);
+      } catch (err) {
+        alert('Impossible de copier');
+      }
+      document.body.removeChild(textArea);
+    });
+  }
+
+  afficherContactAppartement(appartementId: number) {
+    console.log('Tentative de récupération du contact pour appartement:', appartementId);
+    this.proprietaireService.getContactAppartement(appartementId)
+      .subscribe({
+        next: (data) => {
+          console.log('✅ Contact récupéré avec succès:', data);
+          console.log('Type de data:', typeof data);
+          console.log('Data stringifié:', JSON.stringify(data));
+          
+          // Vérifier si data est un objet valide
+          if (data && typeof data === 'object') {
+            this.contactProprietaire = data;
+          } else {
+            console.error('❌ Format de réponse inattendu:', data);
+            this.contactProprietaire = { 
+              nom: '', 
+              email: 'Format de réponse invalide', 
+              telephone: '', 
+              mailtoLink: '' 
+            };
+          }
+        },
+        error: (err) => {
+          console.error('❌ Erreur récupération contact:', err);
+          console.error('Status:', err.status);
+          console.error('StatusText:', err.statusText);
+          console.error('Error object:', err.error);
+          console.error('Message:', err.message);
+          
+          let messageErreur = '';
+          if (err.status === 404) {
+            messageErreur = 'Aucun propriétaire trouvé pour cet appartement';
+          } else if (err.status === 0) {
+            messageErreur = 'Impossible de contacter le serveur. Vérifiez que le backend est démarré.';
+          } else if (err.status === 200) {
+            messageErreur = 'Erreur de parsing de la réponse. Vérifiez le format retourné par le backend.';
+          } else {
+            messageErreur = `Erreur ${err.status}: ${err.statusText || 'Impossible de récupérer le contact'}`;
+          }
+          this.contactProprietaire = { nom: '', email: messageErreur, telephone: '', mailtoLink: '' };
+        }
+      });
   }
 
   trackByAppartementId(index: number, item: AppartementDTO) {

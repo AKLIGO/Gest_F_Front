@@ -60,12 +60,18 @@ export class ActivateAccount implements OnInit{
         this.isSuccess = false;
         this.isLoading = false;
 
+      console.error('Erreur activation:', err); // Pour debug
+
       if (typeof err.error === 'string') {
         this.message = err.error;
       } else if (err.error?.message) {
         this.message = err.error.message;
+      } else if (err.status === 400) {
+        this.message = 'Code d\'activation invalide ou expiré.';
+      } else if (err.status === 404) {
+        this.message = 'Compte non trouvé.';
       } else {
-        this.message = 'Échec de l’activation. Veuillez réessayer.';
+        this.message = 'Échec de l\'activation. Veuillez réessayer ou contacter le support.';
       }
       }
     });

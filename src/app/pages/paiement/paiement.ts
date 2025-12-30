@@ -63,19 +63,43 @@ export class Paiement implements OnInit{
   onSubmit(): void {
     if (this.paiementForm.invalid) return;
 
+    // use stored token or test fallback token
+    const testToken = (window as any).__TEST_ACCESS_TOKEN__;
+    const token = localStorage.getItem('access_token') || testToken;
+    console.log('Paiement - token used:', token ? 'present' : 'none');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        console.log('Paiement - token payload:', payload);
+      } catch (e) {
+        console.warn('Paiement - unable to parse token payload');
+      }
+    } else {
+      console.warn('Utilisateur non authentifié - rester sur la même page');
+      return;
+    }
+
     const paiementData = this.paiementForm.value;
     this.servicePaiement.effectuerPaiement(
       paiementData.reservationId,
       paiementData.montant,
-      paiementData.modePaiement
+      paiementData.modePaiement,
+      token // overrideToken pour forcer l'en-tête Authorization
     ).subscribe({
       next: (data) => {
-        alert('Paiement ajouté avec succès !');
+        console.log('Paiement ajouté avec succès');
         this.afficherFormulaire = false;
         this.paiementForm.reset({ statut: 'EN_ATTENTE' });
         this.loadPaiements(); // Recharger la liste
       },
-      error: (err) => console.error('Erreur lors de l’ajout du paiement', err)
+      error: (err) => {
+        console.error('Erreur lors de l’ajout du paiement', err);
+        if (err?.status === 403) {
+          console.warn('Accès refusé (403) — rester sur la même page');
+        } else {
+          console.error('Erreur lors de l\'ajout du paiement.');
+        }
+      }
     });
   }
 

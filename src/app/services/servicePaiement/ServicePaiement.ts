@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ModePaiement } from '../../interfaces/gestions/paiements/ModePaiement';
-import { Paiement } from '../../pages/paiement/paiement';
 import { PaiementDTO } from '../../interfaces/gestions/paiements/PaiementDTO';
+// import { PaiementDTO } from '../../interfaces/gestions/paiements/PaiementDTO';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,31 +12,27 @@ export class ServicePaiement {
   private apiUrl = 'http://localhost:8082/api/paiement';
   constructor(private http: HttpClient) {   };
 
-    private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('access_token');
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    });
+    private getHeaders(overrideToken?: string): HttpHeaders {
+    // Priorité: overrideToken > localStorage token > window test token
+    const token = overrideToken ?? localStorage.getItem('access_token') ?? (window as any).__TEST_ACCESS_TOKEN__;
+    const headersObj: any = {
+      'Content-Type': 'application/json'
+    };
+    if (token) {
+      headersObj.Authorization = `Bearer ${token}`;
+    }
+    return new HttpHeaders(headersObj);
   }
 
-effectuerPaiement(reservationId: number, montant: number, modePaiement: ModePaiement): Observable<Paiement> {
-  const token = localStorage.getItem('access_token');
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  });
+effectuerPaiement(reservationId: number, montant: number, modePaiement: ModePaiement, overrideToken?: string): Observable<PaiementDTO> {
+  const headers = this.getHeaders(overrideToken);
 
   const params = new HttpParams()
     .set('reservationId', reservationId.toString())
     .set('montant', montant.toString())
-    .set('modePaiement', modePaiement);
+    .set('modePaiement', String(modePaiement));
 
-  return this.http.post<Paiement>(
-    `${this.apiUrl}/ajouter`,
-    null,
-    { headers, params }
-  );
+  return this.http.post<PaiementDTO>(`${this.apiUrl}/ajouter`, null, { headers, params });
 }
 
 
@@ -52,7 +48,8 @@ effectuerPaiement(reservationId: number, montant: number, modePaiement: ModePaie
 
         // Supprimer un paiement
   supprimerPaiement(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/supprimer/${id}`);
+    const headers = this.getHeaders();
+    return this.http.delete<void>(`${this.apiUrl}/supprimer/${id}`, { headers });
   }
 
     // Modifier un paiement
@@ -68,7 +65,8 @@ effectuerPaiement(reservationId: number, montant: number, modePaiement: ModePaie
     if (modePaiement) params.modePaiement = modePaiement;
     if (statut) params.statut = statut;
 
-    return this.http.put<PaiementDTO>(`${this.apiUrl}/modifier/${id}`, null, { params });
+    const headers = this.getHeaders();
+    return this.http.put<PaiementDTO>(`${this.apiUrl}/modifier/${id}`, null, { params, headers });
   }
 
 }

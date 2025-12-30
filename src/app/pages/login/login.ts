@@ -45,8 +45,8 @@ export class Login implements OnInit{
         // Mettre à jour l'utilisateur courant dans le service
         this.authService.login(response.user);
   
-        // Redirection
-        this.router.navigate(['/']);
+        // Redirection selon le rôle
+        this.redirectBasedOnRole(response.user);
       },
       error: (error) => {
         this.errorMessage = 'Erreur de connexion. Vérifiez vos identifiants';
@@ -56,6 +56,25 @@ export class Login implements OnInit{
         this.isLoading = false;
       }
     });
+  }
+
+  // Rediriger selon le rôle de l'utilisateur
+  redirectBasedOnRole(user: any): void {
+    if (!user || !user.roles || user.roles.length === 0) {
+      this.router.navigate(['/']);
+      return;
+    }
+
+    // Vérifier tous les rôles de l'utilisateur
+    const roles = user.roles.map((r: any) => r.name?.toUpperCase());
+
+    if (roles.includes('ADMIN')) {
+      this.router.navigate(['/admin/biens']);
+    } else if (roles.includes('PROPRIETAIRE')) {
+      this.router.navigate(['/proprietaire/biens']);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
   
 

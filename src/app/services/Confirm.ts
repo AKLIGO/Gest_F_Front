@@ -7,13 +7,13 @@ import { Observable } from 'rxjs';
 })
 export class confirm {
 
-    private apiUrl = 'http://localhost:8082/auth';
+    private apiUrl = 'http://localhost:8082/api/auth';
     
     constructor(private http:HttpClient) { }
 
 
     activateAccount(token: string): Observable<any> {
         const params=new HttpParams().set('token',token);
-        return this.http.post(`${this.apiUrl}/activation-account`,null,{params});
+        return this.http.post(`${this.apiUrl}/activation-account`,null,{params, responseType: 'text'});
     }
  }

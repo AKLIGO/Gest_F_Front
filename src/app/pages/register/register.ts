@@ -63,7 +63,7 @@ export class Register implements OnInit{
         // rediriger vers la page apres 3 secondes
 
         setTimeout(()=>{
-          this.router.navigate(['/activate-account'], { queryParams: { email: this.registerRequest.email } });
+          this.router.navigate(['/activate-account']);
 
         }, 3000);
 

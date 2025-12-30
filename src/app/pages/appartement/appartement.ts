@@ -8,6 +8,8 @@ import { TypeAppartement } from '../../interfaces/gestions/Appartement/TypeAppar
 import { ServiceApp } from '../../services/serviceApp/service-app';
 import { ServiceReservation } from '../../services/serviceReservation/ServiceReservation';
 import { ServiceImage } from '../../services/servicesImage/service-image';
+import { ProprietaireService } from '../../services/serviceContact/ProprietaireService';
+import { ProprietaireContactDTO } from '../../interfaces/ProprietaireContactDTO';
 @Component({
   selector: 'app-appartement',
   standalone: true,
@@ -24,6 +26,8 @@ import { ServiceImage } from '../../services/servicesImage/service-image';
   ]
 })
 export class Appartement implements OnInit {
+  contactProprietaire?: ProprietaireContactDTO;
+
 
   appartements: AppartementDTO[] = [];
   selectedImageIndex: number = 0;
@@ -47,7 +51,8 @@ filteredAppartements: AppartementDTO[] = [];
   constructor(
     private serviceApp: ServiceApp,
     private imageService: ServiceImage,
-    private serviceReservation: ServiceReservation
+    private serviceReservation: ServiceReservation,
+    private proprietaireService: ProprietaireService
   ) {}
 
   ngOnInit(): void {
@@ -55,30 +60,95 @@ filteredAppartements: AppartementDTO[] = [];
       next: (data) => {
         this.appartements = data;
         this.filteredAppartements = [...data];
+        this.rechercherAppartements();
         this.prepareCardImage(); // préparer les images pour affichage
       },
       error: (err) => console.error('Erreur chargement appartements:', err)
     });
   }
 
-filtrerAppartements() {
-  this.filteredAppartements = this.appartements.filter(appart => {
-    const correspondAdresse = this.searchAdresse
-      ? appart.adresse?.toLowerCase().includes(this.searchAdresse.toLowerCase())
-      : true;
+  afficherContactAppartement(appartementId: number) {
+  console.log('Tentative de récupération du contact pour appartement:', appartementId);
+  this.proprietaireService.getContactAppartement(appartementId)
+    .subscribe({
+      next: (data) => {
+        console.log('✅ Contact récupéré avec succès:', data);
+        console.log('Type de data:', typeof data);
+        console.log('Data stringifié:', JSON.stringify(data));
+        
+        // Vérifier si data est un objet valide
+        if (data && typeof data === 'object') {
+          this.contactProprietaire = data;
+        } else {
+          console.error('❌ Format de réponse inattendu:', data);
+          this.contactProprietaire = { 
+            nom: '', 
+            email: 'Format de réponse invalide', 
+            telephone: '', 
+            mailtoLink: '' 
+          };
+        }
+      },
+      error: (err) => {
+        console.error('❌ Erreur récupération contact:', err);
+        console.error('Status:', err.status);
+        console.error('StatusText:', err.statusText);
+        console.error('Error object:', err.error);
+        console.error('Message:', err.message);
+        
+        let messageErreur = '';
+        if (err.status === 404) {
+          messageErreur = 'Aucun propriétaire trouvé pour cet appartement';
+        } else if (err.status === 0) {
+          messageErreur = 'Impossible de contacter le serveur. Vérifiez que le backend est démarré.';
+        } else if (err.status === 200) {
+          messageErreur = 'Erreur de parsing de la réponse. Vérifiez le format retourné par le backend.';
+        } else {
+          messageErreur = `Erreur ${err.status}: ${err.statusText || 'Impossible de récupérer le contact'}`;
+        }
+        this.contactProprietaire = { nom: '', email: messageErreur, telephone: '', mailtoLink: '' };
+      }
+    });
+}
 
-    const correspondPrixMin = this.minPrix != null ? appart.prix >= this.minPrix : true;
-    const correspondPrixMax = this.maxPrix != null ? appart.prix <= this.maxPrix : true;
 
-    return correspondAdresse && correspondPrixMin && correspondPrixMax;
+  /**
+ * 🔎 Recherche des appartements (adresse + prix)
+ */
+rechercherAppartements(): void {
+  this.serviceApp.rechercherAppartements(
+    this.searchAdresse,
+    this.minPrix ?? undefined,
+    this.maxPrix ?? undefined
+  ).subscribe({
+    next: (data) => {
+      this.filteredAppartements = data;
+      this.prepareFilteredImages();
+    },
+    error: (err) => {
+      console.error('Erreur lors de la recherche', err);
+    }
+  });
+}
+private prepareFilteredImages(): void {
+  this.filteredAppartements.forEach(appart => {
+    (appart.images ?? []).forEach(img => {
+      if (!img.previewUrl && img.nomFichier) {
+        img.previewUrl = this.imageService.getImageFileUrl(img.nomFichier);
+      }
+    });
   });
 }
 
-reinitialiserFiltres() {
+
+
+
+reinitialiserFiltres(): void {
   this.searchAdresse = '';
   this.minPrix = null;
   this.maxPrix = null;
-  this.filteredAppartements = [...this.appartements];
+
+  this.rechercherAppartements();
 }
 
   showReservationForm(appart: AppartementDTO) {
@@ -123,6 +193,37 @@ reinitialiserFiltres() {
 
   closeDetails() {
     this.selectedAppartement = undefined;
+  }
+
+  copyToClipboard(text: string) {
+    if (!text) {
+      alert('Aucune valeur à copier');
+      return;
+    }
+    
+    // S'assurer que c'est bien une chaîne de caractères
+    const textToCopy = String(text).trim();
+    
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      alert(`Copié : ${textToCopy}`);
+    }).catch(err => {
+      console.error('Erreur lors de la copie:', err);
+      // Fallback pour les anciens navigateurs
+      const textArea = document.createElement('textarea');
+      textArea.value = textToCopy;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert(`Copié : ${textToCopy}`);
+      } catch (err) {
+        alert('Impossible de copier');
+      }
+      document.body.removeChild(textArea);
+    });
   }
 
   trackByAppartementId(index: number, item: AppartementDTO) {

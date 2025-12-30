@@ -19,6 +19,7 @@ export class Header {
   isInitializing = computed(() => this.authServices.isInitializing());
 
   currentRoute: string = '';
+  showPublicMenus: boolean = false; // État pour afficher/masquer les menus publics
 
   constructor(private authServices: UtilisateurService, private router: Router) {
     this.router.events
@@ -63,5 +64,37 @@ export class Header {
   getUserDisplayName(): string {
     const currentUser = this.user();
     return currentUser ? `${currentUser.nom || ''} ${currentUser.prenoms || ''}`.trim() || currentUser.email || 'utilisateur' : 'utilisateur';
+  }
+
+  // Vérifier si l'utilisateur est ADMIN ou PROPRIETAIRE
+  isAdminOrProprietaire(): boolean {
+    const currentUser = this.user();
+    if (!currentUser || !currentUser.roles || currentUser.roles.length === 0) {
+      return false;
+    }
+    // Vérifier tous les rôles, pas seulement le premier
+    return currentUser.roles.some(role => {
+      const roleName = role?.name?.toUpperCase();
+      return roleName === 'ADMIN' || roleName === 'PROPRIETAIRE';
+    });
+  }
+
+  // Vérifier si les menus publics doivent être affichés
+  shouldShowPublicMenus(): boolean {
+    // Si non connecté, toujours afficher les menus
+    if (!this.isAuthenticated()) {
+      return true;
+    }
+    // Si ADMIN ou PROPRIETAIRE, afficher selon l'état du toggle
+    if (this.isAdminOrProprietaire()) {
+      return this.showPublicMenus;
+    }
+    // Pour les autres rôles (CLIENT), toujours afficher
+    return true;
+  }
+
+  // Toggle l'affichage des menus publics
+  togglePublicMenus(): void {
+    this.showPublicMenus = !this.showPublicMenus;
   }
 }
