@@ -1,51 +1,278 @@
-<div class="p-4">
-  <h2 class="text-2xl font-bold mb-4">Mes Réservations Appartements</h2>
-
-  <div *ngIf="loading" class="text-center text-gray-500">Chargement des appartements...</div>
-
-  <div *ngIf="!loading && reservations.length > 0" class="overflow-x-auto">
-    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-4 py-2 text-left text-gray-600">ID</th>
-          <th class="px-4 py-2 text-left text-gray-600">Appartement</th>
-          <th class="px-4 py-2 text-left text-gray-600">Date Début</th>
-          <th class="px-4 py-2 text-left text-gray-600">Date Fin</th>
-          <th class="px-4 py-2 text-left text-gray-600">Statut</th>
-          <th class="px-4 py-2 text-center text-gray-600">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let res of reservations" class="border-t border-gray-200 hover:bg-gray-50">
-          <td class="px-4 py-2">{{ res.id }}</td>
-          <td class="px-4 py-2">{{ res.appartementNom }}</td>
-          <td class="px-4 py-2">{{ res.dateDebut }}</td>
-          <td class="px-4 py-2">{{ res.dateFin }}</td>
-          <td class="px-4 py-2">
-          <span
-            class="px-2 py-1 rounded-full text-xs font-semibold"
-            [ngClass]="{
-            'bg-green-500 text-white': res.statut === 'CONFIRMEE',
-            'bg-yellow-500 text-black': res.statut === 'EN_ATTENTE',
-            'bg-red-500 text-white': res.statut === 'ANNULEE'
-              }">
-            {{ res.statut }}
-          </span>
-          </td>
-          <td class="px-4 py-2 text-center">
-            <button
-              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded transition"
-              (click)="payerReservation(res.id)">
-              Payer
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+<div class="p-6 bg-gray-50 min-h-screen">
+  <!-- En-tête de la page -->
+  <div class="mb-6">
+    <h2 class="text-3xl font-bold text-gray-800 mb-2">
+      <i class="fas fa-building text-blue-500 mr-3"></i>Mes Réservations Appartements
+    </h2>
+    <p class="text-gray-600">Gérez vos réservations d'appartements et effectuez vos paiements</p>
   </div>
 
-  <div *ngIf="!loading && reservations.length === 0" class="text-center text-gray-500 mt-4">
-    <p>Aucune réservation d'appartement trouvée.</p>
+  <!-- Barre de filtres et recherche -->
+  <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      <!-- Recherche -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          <i class="fas fa-search mr-2"></i>Rechercher
+        </label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="applyFilters()"
+          placeholder="Nom d'appartement, ID..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      
+      <!-- Filtre par statut -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          <i class="fas fa-filter mr-2"></i>Statut
+        </label>
+        <select 
+          [(ngModel)]="filterStatus"
+          (ngModelChange)="applyFilters()"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="TOUS">Tous les statuts</option>
+          <option value="VALIDEE">Validée</option>
+          <option value="EN_ATTENTE">En attente</option>
+          <option value="CONFIRMEE">Confirmée</option>
+          <option value="ANNULEE">Annulée</option>
+          <option value="TERMINER">Terminée</option>
+        </select>
+      </div>
+      
+      <!-- Tri -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          <i class="fas fa-sort mr-2"></i>Trier par
+        </label>
+        <select 
+          [(ngModel)]="sortBy"
+          (ngModelChange)="applyFilters()"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="date-desc">Plus récent</option>
+          <option value="date-asc">Plus ancien</option>
+          <option value="nom">Nom (A-Z)</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Bouton réinitialiser et statistiques -->
+    <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+      <button 
+        (click)="resetFilters()"
+        class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+        <i class="fas fa-redo mr-1"></i>Réinitialiser les filtres
+      </button>
+      <div class="text-sm text-gray-600">
+        <span class="font-semibold">{{ filteredReservations.length }}</span> réservation(s) trouvée(s)
+      </div>
+    </div>
+  </div>
+
+  <!-- Message de chargement -->
+  <div *ngIf="loading" class="text-center py-12">
+    <i class="fas fa-spinner fa-spin text-4xl text-blue-500 mb-4"></i>
+    <p class="text-gray-600">Chargement des appartements...</p>
+  </div>
+
+  <!-- Tableau des réservations -->
+  <div *ngIf="!loading && paginatedReservations.length > 0" class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        
+        <!-- En-tête -->
+        <thead class="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+          <tr>
+            <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">Appartement</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">Date Début</th>
+            <th class="px-6 py-4 text-left text-sm font-semibold">Date Fin</th>
+            <th class="px-6 py-4 text-center text-sm font-semibold">Statut</th>
+            <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
+          </tr>
+        </thead>
+
+        <!-- Corps du tableau -->
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let res of paginatedReservations; let i = index" 
+              class="hover:bg-blue-50 transition duration-150"
+              [class.bg-gray-50]="i % 2 === 1">
+
+            <!-- ID -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <span class="text-sm font-medium text-gray-900">#{{ res.id }}</span>
+              </div>
+            </td>
+
+            <!-- Appartement -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <i class="fas fa-home text-blue-500 mr-2"></i>
+                <span class="text-sm font-medium text-gray-900">{{ res.appartementNom }}</span>
+              </div>
+            </td>
+
+            <!-- Date Début -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-700">
+                <i class="far fa-calendar-alt text-green-500 mr-1"></i>
+                {{ res.dateDebut }}
+              </div>
+            </td>
+
+            <!-- Date Fin -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-700">
+                <i class="far fa-calendar-alt text-red-500 mr-1"></i>
+                {{ res.dateFin }}
+              </div>
+            </td>
+
+            <!-- Statut -->
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': res.statut === 'CONFIRMEE' || res.statut === 'VALIDEE',
+                  'bg-yellow-100 text-yellow-800': res.statut === 'EN_ATTENTE',
+                  'bg-red-100 text-red-800': res.statut === 'ANNULEE',
+                  'bg-gray-100 text-gray-800': res.statut === 'TERMINER'
+                }">
+                <i class="fas fa-circle text-[8px] mr-1"></i>
+                {{ res.statut }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex flex-col items-center gap-2">
+                <!-- Boutons -->
+                <div class="flex gap-2">
+                  <!-- Bouton Payer -->
+                  <button
+                    *ngIf="res.statut !== 'ANNULEE'"
+                    class="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow"
+                    (click)="payerReservation(res.id)"
+                    title="Effectuer le paiement">
+                    <i class="fas fa-credit-card mr-1"></i>
+                    Payer
+                  </button>
+                  
+                  <!-- Bouton Annuler -->
+                  <button
+                    *ngIf="canCancelReservation(res.id)"
+                    class="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition duration-200 shadow-sm hover:shadow"
+                    (click)="cancelReservation(res.id)"
+                    title="Annuler dans les 24h">
+                    <i class="fas fa-times-circle mr-1"></i>
+                    Annuler
+                  </button>
+                </div>
+                
+                <!-- Info temps restant -->
+                <div *ngIf="getCancellationInfo(res.id) as info" class="w-full text-center">
+                  <span *ngIf="info.canCancel && info.hoursRemaining !== null" 
+                        class="inline-flex items-center text-xs text-orange-600 font-semibold bg-orange-50 px-2 py-1 rounded">
+                    <i class="fas fa-clock mr-1"></i>{{ info.hoursRemaining }}h restantes
+                  </span>
+                  <span *ngIf="!info.canCancel && res.statut !== 'ANNULEE' && res.statut !== 'TERMINER'"
+                        class="inline-flex items-center text-xs text-gray-500 italic"
+                        [title]="info.message || ''">
+                    <i class="fas fa-info-circle mr-1"></i>Délai dépassé
+                  </span>
+                </div>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- Informations -->
+        <div class="text-sm text-gray-600">
+          Affichage de <span class="font-semibold">{{ (currentPage - 1) * itemsPerPage + 1 }}</span> 
+          à <span class="font-semibold">{{ Math.min(currentPage * itemsPerPage, filteredReservations.length) }}</span> 
+          sur <span class="font-semibold">{{ filteredReservations.length }}</span> résultat(s)
+        </div>
+        
+        <!-- Contrôles de pagination -->
+        <div class="flex items-center gap-2">
+          <!-- Bouton Précédent -->
+          <button 
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            class="px-3 py-2 text-sm font-medium rounded-lg border transition duration-200"
+            [class.bg-white]="currentPage > 1"
+            [class.text-gray-700]="currentPage > 1"
+            [class.hover:bg-gray-50]="currentPage > 1"
+            [class.bg-gray-100]="currentPage === 1"
+            [class.text-gray-400]="currentPage === 1"
+            [class.cursor-not-allowed]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <!-- Numéros de page -->
+          <button 
+            *ngFor="let page of getPageNumbers()"
+            (click)="changePage(page)"
+            class="px-4 py-2 text-sm font-medium rounded-lg border transition duration-200"
+            [class.bg-blue-500]="currentPage === page"
+            [class.text-white]="currentPage === page"
+            [class.border-blue-500]="currentPage === page"
+            [class.bg-white]="currentPage !== page"
+            [class.text-gray-700]="currentPage !== page"
+            [class.hover:bg-gray-50]="currentPage !== page">
+            {{ page }}
+          </button>
+          
+          <!-- Bouton Suivant -->
+          <button 
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+            class="px-3 py-2 text-sm font-medium rounded-lg border transition duration-200"
+            [class.bg-white]="currentPage < totalPages"
+            [class.text-gray-700]="currentPage < totalPages"
+            [class.hover:bg-gray-50]="currentPage < totalPages"
+            [class.bg-gray-100]="currentPage === totalPages"
+            [class.text-gray-400]="currentPage === totalPages"
+            [class.cursor-not-allowed]="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <!-- Sélecteur d'éléments par page -->
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-600">Par page:</label>
+          <select 
+            [(ngModel)]="itemsPerPage"
+            (ngModelChange)="applyFilters()"
+            class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+            <option [value]="50">50</option>
+          </select>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Message si aucune réservation -->
+  <div *ngIf="!loading && paginatedReservations.length === 0" class="bg-white rounded-lg shadow-sm p-12 text-center">
+    <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+    <p class="text-xl font-semibold text-gray-700 mb-2">Aucune réservation trouvée</p>
+    <p class="text-gray-500">
+      {{ searchQuery || filterStatus !== 'TOUS' ? 'Essayez de modifier vos filtres de recherche' : 'Vous n\'avez pas encore de réservation d\'appartement' }}
+    </p>
   </div>
 </div>
 

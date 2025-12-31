@@ -6,6 +6,7 @@ import { Reservations } from '../../interfaces/gestions/Reservations/Reservation
 import { ReservationResponseDTO } from '../../interfaces/gestions/Reservations/ReservationResponseDTO';
 import { ReservationRequestVehi } from '../../interfaces/gestions/Reservations/ReservationRequestVehi';
 import { ReservationResponseVehi } from '../../interfaces/gestions/Reservations/ReservationResponseVehi';
+import { CancellationInfoDTO } from '../../interfaces/gestions/Reservations/CancellationInfoDTO';
 @Injectable({
   providedIn: 'root'
 })
@@ -117,5 +118,49 @@ getReservationsByProprietaire(proprietaireId: number): Observable<ReservationRes
     // 🔹 Réservations véhicules d'un utilisateur spécifique
   getVehiculesByUser(userId: number): Observable<ReservationResponseVehi[]> {
     return this.http.get<ReservationResponseVehi[]>(`${this.apiUrls}/vehicules/user/${userId}`);
+  }
+
+  // 🔹 Annulation de réservation (dans les 24h)
+  /**
+   * Vérifie si une réservation peut être annulée
+   */
+  canCancelReservation(reservationId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/${reservationId}/can-cancel`);
+  }
+
+  /**
+   * Obtient les informations détaillées sur la possibilité d'annulation
+   */
+  getCancellationInfo(reservationId: number): Observable<CancellationInfoDTO> {
+    return this.http.get<CancellationInfoDTO>(`${this.apiUrl}/${reservationId}/cancellation-info`);
+  }
+
+  /**
+   * Annule une réservation
+   */
+  cancelReservation(reservationId: number): Observable<ReservationResponseDTO> {
+    return this.http.post<ReservationResponseDTO>(`${this.apiUrl}/${reservationId}/cancel`, {});
+  }
+
+  // 🔹 Annulation de réservation véhicule (dans les 24h)
+  /**
+   * Vérifie si une réservation véhicule peut être annulée
+   */
+  canCancelReservationVehi(reservationId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrls}/${reservationId}/can-cancel`);
+  }
+
+  /**
+   * Obtient les informations détaillées sur la possibilité d'annulation véhicule
+   */
+  getCancellationInfoVehi(reservationId: number): Observable<CancellationInfoDTO> {
+    return this.http.get<CancellationInfoDTO>(`${this.apiUrls}/${reservationId}/cancellation-info`);
+  }
+
+  /**
+   * Annule une réservation véhicule
+   */
+  cancelReservationVehi(reservationId: number): Observable<ReservationResponseVehi> {
+    return this.http.post<ReservationResponseVehi>(`${this.apiUrls}/${reservationId}/cancel`, {});
   }
 }

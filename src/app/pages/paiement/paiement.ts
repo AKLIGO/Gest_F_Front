@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServicePaiement } from '../../services/servicePaiement/ServicePaiement';
 import { PaiementDTO } from '../../interfaces/gestions/paiements/PaiementDTO';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ModePaiement } from '../../interfaces/gestions/paiements/ModePaiement';
@@ -11,7 +11,7 @@ import { StatutPaiement } from '../../interfaces/gestions/paiements/StatutPaieme
 @Component({
   selector: 'app-paiement',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,FormsModule],
   templateUrl: './paiement.html',
   styleUrl: './paiement.css'
 })
@@ -20,10 +20,12 @@ export class Paiement implements OnInit{
   constructor(private servicePaiement:ServicePaiement, private router: Router,private fb: FormBuilder) {}
 
   paiements:PaiementDTO[] = [];
+  filteredPaiements: PaiementDTO[] = [];
   currentPage=1;
   itemsPerPage=10;
   totalPages=1;
-
+  sortBy: 'date-asc' | 'date-desc' | 'statut' | 'none' = 'none';
+  filterStatus: 'TOUS' | StatutPaiement = 'TOUS';
 
   afficherFormulaire = false;
   paiementForm!: FormGroup;
@@ -38,7 +40,7 @@ export class Paiement implements OnInit{
     this.servicePaiement.getAllPaiements().subscribe({
       next:(data) => {
         this.paiements=data;
-        this.totalPages=Math.ceil(this.paiements.length/this.itemsPerPage);
+        this.applyFiltersAndSort();
       },
 
       error:(err)=> console.error('Erreur lors du chargement des paiements')
@@ -109,7 +111,54 @@ export class Paiement implements OnInit{
 
   get pagedPaiements():PaiementDTO[]{
     const startIndex=(this.currentPage -1)*this.itemsPerPage;
-    return this.paiements.slice(startIndex, startIndex + this.itemsPerPage);
+    return this.filteredPaiements.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  applyFiltersAndSort(): void {
+    let filtered = [...this.paiements];
+
+    // Filtrer par statut
+    if (this.filterStatus !== 'TOUS') {
+      filtered = filtered.filter(p => p.statut === this.filterStatus);
+    }
+
+    // Trier
+    filtered = this.sortPaiements(filtered);
+
+    this.filteredPaiements = filtered;
+    this.totalPages = Math.ceil(this.filteredPaiements.length / this.itemsPerPage);
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages;
+    }
+  }
+
+  sortPaiements(paiements: PaiementDTO[]): PaiementDTO[] {
+    if (this.sortBy === 'none') return paiements;
+
+    return paiements.sort((a, b) => {
+      switch (this.sortBy) {
+        case 'date-asc':
+          return new Date(a.datePaiement).getTime() - new Date(b.datePaiement).getTime();
+        case 'date-desc':
+          return new Date(b.datePaiement).getTime() - new Date(a.datePaiement).getTime();
+        case 'statut':
+          return a.statut.localeCompare(b.statut);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  changeSortBy(sortBy: string): void {
+    this.sortBy = sortBy as any;
+    this.currentPage = 1;
+    this.applyFiltersAndSort();
+  }
+
+  changeFilterStatus(status: string): void {
+    this.filterStatus = status as any;
+    this.currentPage = 1;
+    this.applyFiltersAndSort();
   }
 
   /**

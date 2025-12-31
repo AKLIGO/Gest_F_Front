@@ -21,6 +21,10 @@ export class Reservation implements OnInit{
   currentPage = 1;
   pageSize = 5;
   totalPages = 1;
+  
+  // Propriétés de tri
+  sortBy: 'date-debut-asc' | 'date-debut-desc' | 'date-fin-asc' | 'date-fin-desc' | 'statut' | 'none' = 'none';
+  filterStatus: string = 'TOUS';
 
 
   constructor(private reservationService:ServiceReservation) { }
@@ -30,9 +34,7 @@ export class Reservation implements OnInit{
   }
 
   updatePagedReservations(): void {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.pagedReservations = this.reservations.slice(startIndex, endIndex);   
+    this.applyFiltersAndSort();
   }
 
   loadReservations(): void {
@@ -40,8 +42,7 @@ export class Reservation implements OnInit{
     this.reservationService.getAllReservations().subscribe({
       next: (data) => {
         this.reservations = data;
-        this.totalPages = Math.ceil(this.reservations.length / this.pageSize);
-        this.updatePagedReservations();
+        this.applyFiltersAndSort();
         this.isLoading = false;
       },
       error: (err) => {
@@ -49,6 +50,76 @@ export class Reservation implements OnInit{
         this.isLoading = false;
       } 
     });
+  }
+  
+  /**
+   * Applique le filtrage et le tri
+   */
+  applyFiltersAndSort(): void {
+    let filtered = [...this.reservations];
+    
+    // Filtrer par statut
+    if (this.filterStatus !== 'TOUS') {
+      filtered = filtered.filter(r => r.statut === this.filterStatus);
+    }
+    
+    // Appliquer le tri
+    filtered = this.sortReservations(filtered);
+    
+    // Mettre à jour la pagination
+    this.totalPages = Math.ceil(filtered.length / this.pageSize);
+    this.currentPage = 1;
+    
+    // Mettre à jour les réservations paginées
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedReservations = filtered.slice(startIndex, endIndex);
+  }
+  
+  /**
+   * Trie les réservations selon le critère sélectionné
+   */
+  sortReservations(reservations: ReservationResponseDTO[]): ReservationResponseDTO[] {
+    const sorted = [...reservations];
+    
+    switch(this.sortBy) {
+      case 'date-debut-asc':
+        sorted.sort((a, b) => new Date(a.dateDebut).getTime() - new Date(b.dateDebut).getTime());
+        break;
+      case 'date-debut-desc':
+        sorted.sort((a, b) => new Date(b.dateDebut).getTime() - new Date(a.dateDebut).getTime());
+        break;
+      case 'date-fin-asc':
+        sorted.sort((a, b) => new Date(a.dateFin).getTime() - new Date(b.dateFin).getTime());
+        break;
+      case 'date-fin-desc':
+        sorted.sort((a, b) => new Date(b.dateFin).getTime() - new Date(a.dateFin).getTime());
+        break;
+      case 'statut':
+        sorted.sort((a, b) => a.statut.localeCompare(b.statut));
+        break;
+      default:
+        // Pas de tri
+        break;
+    }
+    
+    return sorted;
+  }
+  
+  /**
+   * Change le tri
+   */
+  changeSortBy(sortBy: typeof this.sortBy): void {
+    this.sortBy = sortBy;
+    this.applyFiltersAndSort();
+  }
+  
+  /**
+   * Change le filtre de statut
+   */
+  changeFilterStatus(status: string): void {
+    this.filterStatus = status;
+    this.applyFiltersAndSort();
   }
 
   changePage(page: number): void {

@@ -37,11 +37,22 @@ export class Appartement implements OnInit {
   StatutAppartement = StatutAppartement;
   TypeAppartement = TypeAppartement;
 
+  // Filtres de recherche
   searchAdresse: string = '';
-minPrix: number | null = null;
-maxPrix: number | null = null;
-appartementss: AppartementDTO[] = [];
-filteredAppartements: AppartementDTO[] = [];
+  searchNom: string = '';
+  minPrix: number | null = null;
+  maxPrix: number | null = null;
+  
+  // Données et pagination
+  appartementss: AppartementDTO[] = [];
+  filteredAppartements: AppartementDTO[] = [];
+  paginatedAppartements: AppartementDTO[] = [];
+  currentPage = 1;
+  itemsPerPage = 12;
+  totalPages = 1;
+  
+  // Exposer Math pour le template
+  Math = Math;
 
   reservationForm = {
     dateDebut: '',
@@ -113,38 +124,100 @@ filteredAppartements: AppartementDTO[] = [];
 
 
   /**
- * 🔎 Recherche des appartements (adresse + prix)
- */
-rechercherAppartements(): void {
-  this.serviceApp.rechercherAppartements(
-    this.searchAdresse,
-    this.minPrix ?? undefined,
-    this.maxPrix ?? undefined
-  ).subscribe({
-    next: (data) => {
-      this.filteredAppartements = data;
-      this.prepareFilteredImages();
-    },
-    error: (err) => {
-      console.error('Erreur lors de la recherche', err);
+   * 🔎 Recherche des appartements avec filtrage simple
+   */
+  rechercherAppartements(): void {
+    let filtered = [...this.appartements];
+    
+    // Filtre par nom
+    if (this.searchNom.trim()) {
+      const nomQuery = this.searchNom.toLowerCase();
+      filtered = filtered.filter(a => 
+        a.nom?.toLowerCase().includes(nomQuery)
+      );
     }
-  });
-}
-private prepareFilteredImages(): void {
-  this.filteredAppartements.forEach(appart => {
-    (appart.images ?? []).forEach(img => {
-      if (!img.previewUrl && img.nomFichier) {
-        img.previewUrl = this.imageService.getImageFileUrl(img.nomFichier);
-      }
+    
+    // Filtre par adresse
+    if (this.searchAdresse.trim()) {
+      const adresseQuery = this.searchAdresse.toLowerCase();
+      filtered = filtered.filter(a => 
+        a.adresse?.toLowerCase().includes(adresseQuery)
+      );
+    }
+    
+    // Filtre par prix
+    if (this.minPrix !== null && this.minPrix > 0) {
+      filtered = filtered.filter(a => a.prix >= this.minPrix!);
+    }
+    if (this.maxPrix !== null && this.maxPrix > 0) {
+      filtered = filtered.filter(a => a.prix <= this.maxPrix!);
+    }
+    
+    this.filteredAppartements = filtered;
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+    this.currentPage = 1;
+    this.updatePagination();
+    this.prepareFilteredImages();
+  }
+  
+  /**
+   * Met à jour la pagination
+   */
+  updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedAppartements = this.filteredAppartements.slice(startIndex, endIndex);
+  }
+  
+  /**
+   * Change de page
+   */
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+      // Scroll vers le haut
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+  
+  /**
+   * Obtient les numéros de page à afficher
+   */
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+  
+  private prepareFilteredImages(): void {
+    this.filteredAppartements.forEach(appart => {
+      (appart.images ?? []).forEach(img => {
+        if (!img.previewUrl && img.nomFichier) {
+          img.previewUrl = this.imageService.getImageFileUrl(img.nomFichier);
+        }
+      });
     });
-  });
-}
+  }
 
 
 
 
 reinitialiserFiltres(): void {
   this.searchAdresse = '';
+  this.searchNom = '';
   this.minPrix = null;
   this.maxPrix = null;
 

@@ -28,15 +28,27 @@ import { ProprietaireContactDTO } from '../../interfaces/ProprietaireContactDTO'
 })
 export class VehiculesVue implements OnInit {
   vehicules: VehiculeDTO[] = [];
+  filteredVehicules: VehiculeDTO[] = [];
+  paginatedVehicules: VehiculeDTO[] = [];
   selectedVehicule?: VehiculeDTO;
   selectedImageIndex: number = 0;
   contactProprietaire?: ProprietaireContactDTO;
   StatutVehicule = StatutVehicule;
   TypeVehicule = TypeVehicule;
   Carburant = Carburant;
+  
+  // Filtres de recherche
   marqueRecherche: string = '';
   prixMin?: number;
   prixMax?: number;
+  
+  // Pagination
+  currentPage = 1;
+  itemsPerPage = 9;
+  totalPages = 1;
+  
+  // Exposer Math pour le template
+  Math = Math;
 
   showReservationForm = false;
   reservationForm = {
@@ -60,6 +72,7 @@ export class VehiculesVue implements OnInit {
       next: data => {
         this.vehicules = data;
         this.prepareImages();
+        this.rechercherVehicules();
       },
       error: err => console.error('Erreur chargement véhicules:', err)
     });
@@ -209,29 +222,84 @@ export class VehiculesVue implements OnInit {
     });
   }
   /**
-   * 17-12-2025
-   * ajouter la gestion de recherche des véhicules
+   * Recherche des véhicules avec filtrage local et pagination
    */
-
   rechercherVehicules() {
-  this.vehiculeService.rechercherVehicules(
-    this.marqueRecherche,
-    this.prixMin,
-    this.prixMax
-  ).subscribe({
-    next: data => {
-      this.vehicules = data;
-      this.prepareImages();
-    },
-    error: err => console.error('Erreur recherche véhicules:', err)
-  });
-}
-resetRecherche() {
-  this.marqueRecherche = '';
-  this.prixMin = undefined;
-  this.prixMax = undefined;
-  this.loadVehicules(); // recharge tous les véhicules
-}
+    let filtered = [...this.vehicules];
+    
+    // Filtre par marque
+    if (this.marqueRecherche && this.marqueRecherche.trim()) {
+      const marqueQuery = this.marqueRecherche.toLowerCase();
+      filtered = filtered.filter(v => 
+        v.marque?.toLowerCase().includes(marqueQuery) ||
+        v.modele?.toLowerCase().includes(marqueQuery)
+      );
+    }
+    
+    // Filtre par prix minimum
+    if (this.prixMin !== undefined && this.prixMin > 0) {
+      filtered = filtered.filter(v => v.prix >= this.prixMin!);
+    }
+    
+    // Filtre par prix maximum
+    if (this.prixMax !== undefined && this.prixMax > 0) {
+      filtered = filtered.filter(v => v.prix <= this.prixMax!);
+    }
+    
+    this.filteredVehicules = filtered;
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+  
+  /**
+   * Met à jour la pagination
+   */
+  updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedVehicules = this.filteredVehicules.slice(startIndex, endIndex);
+  }
+  
+  /**
+   * Change de page
+   */
+  changePage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagination();
+      // Scroll vers le haut
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+  
+  /**
+   * Obtient les numéros de page à afficher
+   */
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
+  }
+  
+  resetRecherche() {
+    this.marqueRecherche = '';
+    this.prixMin = undefined;
+    this.prixMax = undefined;
+    this.rechercherVehicules();
+  }
 
 
 }

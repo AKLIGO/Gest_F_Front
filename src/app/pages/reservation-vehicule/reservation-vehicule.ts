@@ -23,6 +23,8 @@ export class ReservationVehicule implements OnInit{
   currentPage = 1;
   pageSize = 5;
   totalPages = 1;
+  sortBy: 'date-debut-asc' | 'date-debut-desc' | 'date-fin-asc' | 'date-fin-desc' | 'statut' | 'none' = 'none';
+  filterStatus: 'TOUS' | StatusReservation = 'TOUS';
 
   constructor(private reservationService:ServiceReservation) { }
 
@@ -34,10 +36,63 @@ export class ReservationVehicule implements OnInit{
   }
 
   updatePagedReservations(): void {
-    const startIndex =(this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.pagedReservations = this.reservationVehicule.slice(startIndex, endIndex);   
+    this.applyFiltersAndSort();
+  }
 
+  applyFiltersAndSort(): void {
+    let filtered = [...this.reservationVehicule];
+
+    // Filtrer par statut
+    if (this.filterStatus !== 'TOUS') {
+      filtered = filtered.filter(r => r.statut === this.filterStatus);
+    }
+
+    // Trier
+    filtered = this.sortReservations(filtered);
+
+    // Calculer pagination
+    this.totalPages = Math.ceil(filtered.length / this.pageSize);
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages;
+    }
+
+    // Paginer
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedReservations = filtered.slice(startIndex, endIndex);
+  }
+
+  sortReservations(reservations: ReservationResponseVehi[]): ReservationResponseVehi[] {
+    if (this.sortBy === 'none') return reservations;
+
+    return reservations.sort((a, b) => {
+      switch (this.sortBy) {
+        case 'date-debut-asc':
+          return new Date(a.dateDebut).getTime() - new Date(b.dateDebut).getTime();
+        case 'date-debut-desc':
+          return new Date(b.dateDebut).getTime() - new Date(a.dateDebut).getTime();
+        case 'date-fin-asc':
+          return new Date(a.dateFin).getTime() - new Date(b.dateFin).getTime();
+        case 'date-fin-desc':
+          return new Date(b.dateFin).getTime() - new Date(a.dateFin).getTime();
+        case 'statut':
+          return a.statut.localeCompare(b.statut);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  changeSortBy(sortBy: string): void {
+    this.sortBy = sortBy as any;
+    this.currentPage = 1;
+    this.applyFiltersAndSort();
+  }
+
+  changeFilterStatus(status: string): void {
+    this.filterStatus = status as any;
+    this.currentPage = 1;
+    this.applyFiltersAndSort();
   }
 
   loadReservations(): void {
@@ -45,8 +100,7 @@ export class ReservationVehicule implements OnInit{
     this.reservationService.getAllReservationsVehi().subscribe({
       next: (data) => {
         this.reservationVehicule = data;
-        this.totalPages = Math.ceil(this.reservationVehicule.length / this.pageSize);
-        this.updatePagedReservations();
+        this.applyFiltersAndSort();
         this.isLoading = false;
       },
       error: (err) => {

@@ -15,16 +15,35 @@
       </p>
     </div>
 
-    <!-- Barre de recherche premium -->
+    <!-- Barre de recherche simplifiée -->
     <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8 mb-12">
       <div class="flex items-center gap-3 mb-6">
         <div class="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center">
           <i class="fas fa-search text-white text-lg"></i>
         </div>
-        <h3 class="text-2xl font-bold text-gray-900">Rechercher un appartement</h3>
+        <h3 class="text-2xl font-bold text-gray-900">Recherche Avancée</h3>
+        <span class="ml-auto text-sm text-gray-500">{{ filteredAppartements.length }} résultat(s)</span>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <!-- Ligne 1: Nom et Adresse -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <!-- Nom -->
+        <div class="relative group">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            <i class="fas fa-signature mr-2 text-blue-500"></i>Nom de l'appartement
+          </label>
+          <input
+            type="text"
+            placeholder="Villa, Studio..."
+            [(ngModel)]="searchNom"
+            (ngModelChange)="rechercherAppartements()"
+            class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+          />
+          <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
+            <i class="fas fa-building"></i>
+          </div>
+        </div>
+
         <!-- Adresse -->
         <div class="relative group">
           <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -32,24 +51,30 @@
           </label>
           <input
             type="text"
-            placeholder="Quartier, rue..."
+            placeholder="Quartier, rue, ville..."
             [(ngModel)]="searchAdresse"
+            (ngModelChange)="rechercherAppartements()"
             class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
           />
           <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
             <i class="fas fa-home"></i>
           </div>
         </div>
+      </div>
 
+      <!-- Ligne 2: Prix min et Prix max -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <!-- Prix min -->
         <div class="relative group">
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Prix minimum
+            <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Prix minimum (FCFA)
           </label>
           <input
             type="number"
             placeholder="0"
+            min="0"
             [(ngModel)]="minPrix"
+            (ngModelChange)="rechercherAppartements()"
             class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
           />
           <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
@@ -60,35 +85,30 @@
         <!-- Prix max -->
         <div class="relative group">
           <label class="block text-sm font-medium text-gray-700 mb-2">
-            <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Prix maximum
+            <i class="fas fa-money-bill-wave mr-2 text-blue-500"></i>Prix maximum (FCFA)
           </label>
           <input
             type="number"
             placeholder="500000"
+            min="0"
             [(ngModel)]="maxPrix"
+            (ngModelChange)="rechercherAppartements()"
             class="w-full px-4 py-3 pl-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
           />
           <div class="absolute left-4 top-[46px] text-gray-400 pointer-events-none">
             <i class="fas fa-coins"></i>
           </div>
         </div>
+      </div>
 
-        <!-- Boutons -->
-        <div class="flex flex-col gap-2 md:pt-8 md:col-span-2">
-          <button
-            (click)="rechercherAppartements()"
-            class="group relative flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105 shadow-lg">
-            <i class="fas fa-search mr-2"></i>
-            Rechercher
-          </button>
-
-          <button
-            (click)="reinitialiserFiltres()"
-            class="flex items-center justify-center px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200">
-            <i class="fas fa-redo mr-2"></i>
-            Réinitialiser
-          </button>
-        </div>
+      <!-- Bouton réinitialiser -->
+      <div class="flex justify-end pt-4 border-t border-gray-200">
+        <button
+          (click)="reinitialiserFiltres()"
+          class="flex items-center justify-center px-6 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200">
+          <i class="fas fa-redo mr-2"></i>
+          Réinitialiser
+        </button>
       </div>
     </div>
 
@@ -96,13 +116,13 @@
 
 
     <!-- Grille des appartements moderne -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-      <div *ngFor="let appart of filteredAppartements; trackBy: trackByAppartementId"
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+      <div *ngFor="let appart of paginatedAppartements; trackBy: trackByAppartementId"
            class="group bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden border border-white/20">
 
         <!-- Image avec overlay -->
         <div class="relative overflow-hidden">
-          <img [src]="getImageUrl(appart.images?.[0])"
+          <img [src]="getImageUrl(appart.images[0])"
                [alt]="appart.nom"
                class="w-full h-56 object-cover transform group-hover:scale-110 transition-transform duration-500">
 
@@ -213,6 +233,93 @@
       </div>
     </div>
 
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 mb-12">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        
+        <!-- Informations -->
+        <div class="text-sm text-gray-600">
+          Affichage de <span class="font-semibold">{{ (currentPage - 1) * itemsPerPage + 1 }}</span> 
+          à <span class="font-semibold">{{ Math.min(currentPage * itemsPerPage, filteredAppartements.length) }}</span> 
+          sur <span class="font-semibold">{{ filteredAppartements.length }}</span> appartement(s)
+        </div>
+        
+        <!-- Contrôles de pagination -->
+        <div class="flex items-center gap-2">
+          <!-- Bouton Précédent -->
+          <button 
+            (click)="changePage(currentPage - 1)"
+            [disabled]="currentPage === 1"
+            class="px-4 py-2 text-sm font-medium rounded-xl border-2 transition duration-200 shadow-sm hover:shadow"
+            [class.bg-gradient-to-r]="currentPage > 1"
+            [class.from-blue-600]="currentPage > 1"
+            [class.to-purple-600]="currentPage > 1"
+            [class.text-white]="currentPage > 1"
+            [class.border-transparent]="currentPage > 1"
+            [class.hover:from-blue-700]="currentPage > 1"
+            [class.hover:to-purple-700]="currentPage > 1"
+            [class.bg-gray-100]="currentPage === 1"
+            [class.text-gray-400]="currentPage === 1"
+            [class.border-gray-200]="currentPage === 1"
+            [class.cursor-not-allowed]="currentPage === 1">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <!-- Numéros de page -->
+          <button 
+            *ngFor="let page of getPageNumbers()"
+            (click)="changePage(page)"
+            class="px-4 py-2 text-sm font-medium rounded-xl border-2 transition duration-200 shadow-sm hover:shadow"
+            [class.bg-gradient-to-r]="currentPage === page"
+            [class.from-blue-600]="currentPage === page"
+            [class.to-purple-600]="currentPage === page"
+            [class.text-white]="currentPage === page"
+            [class.border-transparent]="currentPage === page"
+            [class.bg-white]="currentPage !== page"
+            [class.text-gray-700]="currentPage !== page"
+            [class.border-gray-200]="currentPage !== page"
+            [class.hover:bg-gray-50]="currentPage !== page">
+            {{ page }}
+          </button>
+          
+          <!-- Bouton Suivant -->
+          <button 
+            (click)="changePage(currentPage + 1)"
+            [disabled]="currentPage === totalPages"
+            class="px-4 py-2 text-sm font-medium rounded-xl border-2 transition duration-200 shadow-sm hover:shadow"
+            [class.bg-gradient-to-r]="currentPage < totalPages"
+            [class.from-blue-600]="currentPage < totalPages"
+            [class.to-purple-600]="currentPage < totalPages"
+            [class.text-white]="currentPage < totalPages"
+            [class.border-transparent]="currentPage < totalPages"
+            [class.hover:from-blue-700]="currentPage < totalPages"
+            [class.hover:to-purple-700]="currentPage < totalPages"
+            [class.bg-gray-100]="currentPage === totalPages"
+            [class.text-gray-400]="currentPage === totalPages"
+            [class.border-gray-200]="currentPage === totalPages"
+            [class.cursor-not-allowed]="currentPage === totalPages">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <!-- Sélecteur d'éléments par page -->
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-600 font-medium">Par page:</label>
+          <select 
+            [(ngModel)]="itemsPerPage"
+            (ngModelChange)="rechercherAppartements()"
+            class="px-3 py-2 text-sm border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+            <option [value]="8">8</option>
+            <option [value]="12">12</option>
+            <option [value]="16">16</option>
+            <option [value]="24">24</option>
+            <option [value]="32">32</option>
+          </select>
+        </div>
+        
+      </div>
+    </div>
+
     <!-- Message aucun appartement avec design moderne -->
     <div *ngIf="filteredAppartements.length === 0" class="text-center py-20">
       <div class="mx-auto w-32 h-32 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-6">
@@ -252,20 +359,20 @@
 
     <!-- Galerie d'images premium -->
     <div class="bg-gray-50 p-6">
-      <ng-container *ngIf="(selectedAppartement.images ?? []).length > 0; else noImages">
+      <ng-container *ngIf="selectedAppartement.images.length > 0; else noImages">
         <div class="relative rounded-2xl overflow-hidden shadow-xl">
           <img [src]="getImageUrl(selectedAppartement.images[selectedImageIndex])"
                class="w-full h-[28rem] object-cover"
-               [alt]="selectedAppartement.nom ?? 'image'">
+               [alt]="selectedAppartement.nom">
 
           <!-- Boutons de navigation -->
-          <button *ngIf="(selectedAppartement.images?.length ?? 0) > 1"
+          <button *ngIf="selectedAppartement.images.length > 1"
                   (click)="prevImage()"
                   class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
             <i class="fas fa-chevron-left text-blue-600 text-xl"></i>
           </button>
 
-          <button *ngIf="(selectedAppartement.images?.length ?? 0) > 1"
+          <button *ngIf="selectedAppartement.images.length > 1"
                   (click)="nextImage()"
                   class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
             <i class="fas fa-chevron-right text-blue-600 text-xl"></i>
