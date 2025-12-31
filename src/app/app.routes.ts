@@ -32,12 +32,18 @@ import { ListUtilisateurs } from './pages/Parametre/Admin/list-utilisateurs/list
 import { VoirReservationComponent } from './pages/HistriqueClient/voir-reservation/voir-reservation.component';
 import { VoirReservationVehicComponent } from './pages/HistriqueClient/voir-reservation-vehic/voir-reservation-vehic.component';
 import { About } from './pages/about/about';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password';
+import { VerifyCodeComponent } from './pages/verify-code/verify-code';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password';
 
 export const routes: Routes = [
     {path:'contact', component:Contact},
     {path:'about', component:About},
     {path:'login', component:Login},
     {path:'register',component:Register},
+    {path:'forgot-password', component:ForgotPasswordComponent},
+    {path:'verify-code', component:VerifyCodeComponent},
+    {path:'reset-password', component:ResetPasswordComponent},
     {path:'appartement', component:Appartement},
     {path:'vehicules', component:VehiculesVue},
     {path:'', component:Home},
