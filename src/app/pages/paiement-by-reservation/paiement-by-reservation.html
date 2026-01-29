@@ -1,11 +1,26 @@
-<div class="p-6 bg-gray-50 min-h-screen">
-  <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">
-    Paiements pour la réservation {{ reservationId }}
-  </h2>
+<div class="p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-screen">
+  <div class="max-w-7xl mx-auto">
+    <!-- En-tête -->
+    <div class="mb-6">
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">
+        <i class="fas fa-money-bill-wave text-blue-500 mr-3"></i>Paiements de la réservation #{{ reservationId }}
+      </h2>
+      <p class="text-gray-600">Consultez tous les paiements associés à cette réservation</p>
+    </div>
 
-  <div class="overflow-x-auto bg-white rounded-2xl shadow-lg">
-    <table class="min-w-full border border-gray-200">
-      <thead class="bg-gradient-to-r from-indigo-500 to-blue-600 text-white">
+    <!-- Bouton Export -->
+    <div class="mb-6 flex justify-end">
+      <button 
+        (click)="exportToExcel()"
+        class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200 shadow-sm hover:shadow-md flex items-center">
+        <i class="fas fa-file-excel mr-2"></i>
+        Exporter en Excel
+      </button>
+    </div>
+
+    <div class="overflow-x-auto bg-white rounded-xl shadow-sm">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
         <tr>
           <th class="py-3 px-4 text-left font-semibold">ID</th>
           <th class="py-3 px-4 text-left font-semibold">Utilisateur</th>
@@ -41,35 +56,64 @@
     </table>
   </div>
 
+  <!-- Message si aucun paiement -->
+  <div *ngIf="paiements.length === 0" class="text-center py-12">
+    <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+    <p class="text-xl font-semibold text-gray-700 mb-2">Aucun paiement trouvé</p>
+    <p class="text-gray-500">Il n'y a pas encore de paiement pour cette réservation</p>
+  </div>
+
   <!-- Pagination -->
-  <div class="flex justify-center items-center mt-6 space-x-2">
-    <button
-      (click)="prevPage()"
-      [disabled]="currentPage === 1"
-      class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition"
-    >
-      ◀ Précédent
-    </button>
+  <div *ngIf="totalPages > 1" class="mt-6 bg-white rounded-xl shadow-sm p-4">
+    <div class="flex justify-center items-center gap-2">
+      <button
+        (click)="prevPage()"
+        [disabled]="currentPage === 1"
+        class="px-4 py-2 text-sm font-medium rounded-lg border-2 transition duration-200"
+        [class.bg-blue-500]="currentPage > 1"
+        [class.text-white]="currentPage > 1"
+        [class.border-transparent]="currentPage > 1"
+        [class.hover:bg-blue-600]="currentPage > 1"
+        [class.bg-gray-100]="currentPage === 1"
+        [class.text-gray-400]="currentPage === 1"
+        [class.border-gray-200]="currentPage === 1"
+        [class.cursor-not-allowed]="currentPage === 1"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
 
-    <button
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      (click)="goToPage(i + 1)"
-      [ngClass]="{
-        'bg-indigo-600 text-white': currentPage === (i + 1),
-        'bg-gray-200 text-gray-700 hover:bg-gray-300': currentPage !== (i + 1)
-      }"
-      class="px-3 py-1 rounded-lg font-semibold transition"
-    >
-      {{ i + 1 }}
-    </button>
+      <button
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        (click)="goToPage(i + 1)"
+        class="px-4 py-2 text-sm font-medium rounded-lg border-2 transition duration-200"
+        [class.bg-blue-500]="currentPage === (i + 1)"
+        [class.text-white]="currentPage === (i + 1)"
+        [class.border-transparent]="currentPage === (i + 1)"
+        [class.bg-white]="currentPage !== (i + 1)"
+        [class.text-gray-700]="currentPage !== (i + 1)"
+        [class.border-gray-200]="currentPage !== (i + 1)"
+        [class.hover:bg-gray-50]="currentPage !== (i + 1)"
+      >
+        {{ i + 1 }}
+      </button>
 
-    <button
-      (click)="nextPage()"
-      [disabled]="currentPage === totalPages"
-      class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition"
-    >
-      Suivant ▶
-    </button>
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        class="px-4 py-2 text-sm font-medium rounded-lg border-2 transition duration-200"
+        [class.bg-blue-500]="currentPage < totalPages"
+        [class.text-white]="currentPage < totalPages"
+        [class.border-transparent]="currentPage < totalPages"
+        [class.hover:bg-blue-600]="currentPage < totalPages"
+        [class.bg-gray-100]="currentPage === totalPages"
+        [class.text-gray-400]="currentPage === totalPages"
+        [class.border-gray-200]="currentPage === totalPages"
+        [class.cursor-not-allowed]="currentPage === totalPages"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
   </div>
 </div>
 

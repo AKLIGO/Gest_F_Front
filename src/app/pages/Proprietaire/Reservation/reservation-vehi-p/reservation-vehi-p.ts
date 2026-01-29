@@ -144,16 +144,21 @@ export class ReservationVehiP implements OnInit {
     this.selectedReservation = reservation;
     this.editingReservationId = reservation.id;
 
-    // Trouver le véhicule correspondant
-    const vehicule = this.vehicules.find(v =>
-      `${v.marque} ${v.modele}` === `${reservation.vehiculeMarque} ${reservation.vehiculeImmatriculation}`
+    // Trouver le véhicule correspondant par son immatriculation
+    const vehicule = this.vehicules.find(v => 
+      v.immatriculation === reservation.vehiculeImmatriculation
     );
+
+    console.log('Réservation à modifier:', reservation);
+    console.log('Véhicule trouvé:', vehicule);
 
     this.reservationForm.patchValue({
       dateDebut: reservation.dateDebut.split('T')[0], // Convertir de ISO à YYYY-MM-DD
       dateFin: reservation.dateFin.split('T')[0],
       vehiculeId: vehicule?.id || null
     });
+
+    console.log('Valeur du formulaire après patchValue:', this.reservationForm.value);
 
     this.showModal = true;
   }
@@ -176,7 +181,7 @@ export class ReservationVehiP implements OnInit {
       const formData = this.reservationForm.value;
 
       if (this.isEditMode && this.editingReservationId) {
-        this.updateReservationStatus(this.editingReservationId, 'CONFIRMEE');
+        this.updateReservation(this.editingReservationId, formData);
       } else {
         this.createReservation(formData);
       }
@@ -202,6 +207,27 @@ export class ReservationVehiP implements OnInit {
       error: (error) => {
         console.error('Erreur lors de la création de la réservation:', error);
         this.errorMessage = 'Erreur lors de la création de la réservation';
+      }
+    });
+  }
+
+  updateReservation(reservationId: number, formData: any): void {
+    const reservationRequest: ReservationRequestVehi = {
+      dateDebut: formData.dateDebut,
+      dateFin: formData.dateFin,
+      vehiculeId: formData.vehiculeId
+    };
+
+    this.reservationService.updateReservationVehi(reservationId, reservationRequest).subscribe({
+      next: (response) => {
+        this.successMessage = 'Réservation mise à jour avec succès';
+        this.closeModal();
+        this.refreshData();
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la mise à jour de la réservation:', error);
+        this.errorMessage = 'Erreur lors de la mise à jour de la réservation';
       }
     });
   }

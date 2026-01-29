@@ -406,16 +406,12 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
               <label class="block text-sm font-medium text-gray-700">
-                <i class="fas fa-building mr-2 text-gray-500"></i>Immeuble *
+                <i class="fas fa-building mr-2 text-gray-500"></i>Immeuble
               </label>
               <select formControlName="immeubleId" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white">
                 <option value="">Sélectionner un immeuble</option>
                 <option *ngFor="let immeuble of immeubles" [value]="immeuble.id">{{ immeuble.nom }}</option>
               </select>
-              <div *ngIf="appartementForm.get('immeubleId')?.invalid && appartementForm.get('immeubleId')?.touched" class="text-red-500 text-sm flex items-center">
-                <i class="fas fa-exclamation-circle mr-1"></i>
-                L'immeuble est requis.
-              </div>
             </div>
             
             <div class="space-y-2">

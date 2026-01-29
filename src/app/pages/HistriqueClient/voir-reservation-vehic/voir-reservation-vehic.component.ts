@@ -179,6 +179,26 @@ export class VoirReservationVehicComponent implements OnInit{
   }
 
   /**
+   * Exporte mes réservations de véhicules en fichier Excel
+   */
+  exportToExcel(): void {
+    this.reservationService.exportMyReservationsVehiculesToExcel().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `mes_reservations_vehicules_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'export Excel:', err);
+        alert('Erreur lors de l\'export de vos réservations');
+      }
+    });
+  }
+
+  /**
    * Charge les informations d'annulation pour toutes les réservations véhicules
    */
   loadCancellationInfos(): void {

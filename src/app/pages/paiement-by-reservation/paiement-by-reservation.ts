@@ -65,5 +65,25 @@ prevPage() {
   if(this.currentPage > 1) this.currentPage--;
 }
 
+/**
+ * Exporte les paiements de cette réservation en fichier Excel
+ */
+exportToExcel(): void {
+  this.servicePaiement.exportPaiementsByReservationToExcel(this.reservationId).subscribe({
+    next: (blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `paiements_reservation_${this.reservationId}_${new Date().toISOString().split('T')[0]}.xlsx`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: (err) => {
+      console.error('Erreur lors de l\'export Excel:', err);
+      alert('Erreur lors de l\'export des paiements');
+    }
+  });
+}
+
 
 }

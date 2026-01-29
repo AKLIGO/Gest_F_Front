@@ -60,7 +60,7 @@ export class AppartementP implements OnInit {
       localisation:['',Validators.required],
       type: [null, Validators.required],
       statut: [null, Validators.required],
-      immeubleId: [null, Validators.required]
+      immeubleId: [null]
     });
   }
 
@@ -184,6 +184,7 @@ export class AppartementP implements OnInit {
     this.isEditMode = true;
     this.editingAppartementId = app.id;
     this.selectedAppartement = null;
+    console.log('Prix avant patchValue:', app.prix);
     this.appartementForm.patchValue({
       nom: app.nom,
       adresse: app.adresse,
@@ -197,6 +198,7 @@ export class AppartementP implements OnInit {
       statut: app.statut,
       immeubleId: app.immeubleId
     });
+    console.log('Prix après patchValue:', this.appartementForm.get('prix')?.value);
     this.showModal = true;
   }
 
@@ -220,22 +222,35 @@ export class AppartementP implements OnInit {
     if (this.appartementForm.invalid) return;
 
     const formValue = this.appartementForm.value;
-    const selectedImmeuble = this.immeubles.find(i => i.id === Number(formValue.immeubleId));
-    if (!selectedImmeuble) {
-      alert('Veuillez sélectionner un immeuble valide');
-      return;
-    }
-
-    const payload: AppartementCreate = {
-      ...formValue,
-      immeubleId: selectedImmeuble.id,
+    
+    console.log('FormValue brut:', formValue);
+    console.log('Prix du formulaire:', formValue.prix, 'Type:', typeof formValue.prix);
+    
+    const payload: any = {
+      nom: formValue.nom,
+      adresse: formValue.adresse,
+      prix: Number(formValue.prix),
+      numero: Number(formValue.numero),
+      superficie: formValue.superficie,
+      nbrDePieces: Number(formValue.nbrDePieces),
+      description: formValue.description || '',
+      localisation: formValue.localisation,
+      type: formValue.type,
+      statut: formValue.statut,
+      immeubleId: formValue.immeubleId ? Number(formValue.immeubleId) : null,
       proprietaireId: this.currentUser?.id || 0
     };
 
+    console.log('Payload final envoyé:', payload);
+    console.log('Prix dans payload:', payload.prix, 'Type:', typeof payload.prix);
+
     if (this.isEditMode && this.editingAppartementId) {
+      console.log('Envoi de la mise à jour avec ID:', this.editingAppartementId, 'Payload:', payload);
       this.serviceApp.updateAppartement(this.editingAppartementId, payload).subscribe({
-        next: () => {
-          this.loadAppartementsProprietaire();
+        next: (response) => {
+          console.log('Réponse du backend après mise à jour:', response);
+          console.log('Prix dans la réponse:', response.prix);
+          this.refreshData();
           this.closeModal();
         },
         error: (error) => {
@@ -246,7 +261,7 @@ export class AppartementP implements OnInit {
     } else {
       this.serviceApp.addAppartement(payload).subscribe({
         next: () => {
-          this.loadAppartementsProprietaire();
+          this.refreshData();
           this.closeModal();
         },
         error: (error) => {

@@ -162,6 +162,26 @@ export class Paiement implements OnInit{
   }
 
   /**
+   * Exporte tous les paiements en fichier Excel
+   */
+  exportToExcel(): void {
+    this.servicePaiement.exportAllPaiementsToExcel().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `tous_les_paiements_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'export Excel:', err);
+        alert('Erreur lors de l\'export des paiements');
+      }
+    });
+  }
+
+  /**
    * Navigation
    */
 

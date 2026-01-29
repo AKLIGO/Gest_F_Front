@@ -122,6 +122,26 @@ export class Reservation implements OnInit{
     this.applyFiltersAndSort();
   }
 
+  /**
+   * Exporte toutes les réservations d'appartements en fichier Excel
+   */
+  exportToExcel(): void {
+    this.reservationService.exportReservationsAppartementsToExcel().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `reservations_appartements_${new Date().toISOString().split('T')[0]}.xlsx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'export Excel:', err);
+        alert('Erreur lors de l\'export des réservations');
+      }
+    });
+  }
+
   changePage(page: number): void {
   if (page < 1 || page > this.totalPages) return;
   this.currentPage = page;

@@ -179,7 +179,7 @@ export class ReservationAppP implements OnInit {
       const formData = this.reservationForm.value;
 
       if (this.isEditMode && this.editingReservationId) {
-        this.updateReservationStatus(this.editingReservationId, 'VALIDEE');
+        this.updateReservation(this.editingReservationId, formData);
       } else {
         this.createReservation(formData);
       }
@@ -205,6 +205,27 @@ export class ReservationAppP implements OnInit {
       error: (error) => {
         console.error('Erreur lors de la création de la réservation:', error);
         this.errorMessage = 'Erreur lors de la création de la réservation';
+      }
+    });
+  }
+
+  updateReservation(reservationId: number, formData: any): void {
+    const reservationRequest: ReservationRequest = {
+      dateDebut: formData.dateDebut,
+      dateFin: formData.dateFin,
+      appartementId: formData.appartementId
+    };
+
+    this.reservationService.updateReservation(reservationId, reservationRequest).subscribe({
+      next: (response) => {
+        this.successMessage = 'Réservation mise à jour avec succès';
+        this.closeModal();
+        this.refreshData();
+        setTimeout(() => this.successMessage = '', 3000);
+      },
+      error: (error) => {
+        console.error('Erreur lors de la mise à jour de la réservation:', error);
+        this.errorMessage = 'Erreur lors de la mise à jour de la réservation';
       }
     });
   }

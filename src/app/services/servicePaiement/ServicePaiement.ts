@@ -69,4 +69,23 @@ effectuerPaiement(reservationId: number, montant: number, modePaiement: ModePaie
     return this.http.put<PaiementDTO>(`${this.apiUrl}/modifier/${id}`, null, { params, headers });
   }
 
+  // 🔹 Export Excel - Paiements
+  /**
+   * Exporte tous les paiements en fichier Excel
+   */
+  exportAllPaiementsToExcel(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/export/excel`, {
+      responseType: 'blob'
+    });
+  }
+
+  /**
+   * Exporte les paiements d'une réservation spécifique en fichier Excel
+   */
+  exportPaiementsByReservationToExcel(reservationId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/reservation/${reservationId}/export/excel`, {
+      responseType: 'blob'
+    });
+  }
+
 }

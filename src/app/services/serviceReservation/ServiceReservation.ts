@@ -25,6 +25,11 @@ export class ServiceReservation {
     return this.http.put<ReservationResponseDTO>(`${this.apiUrl}/${id}/status?statut=${statut}`, {});
   }
 
+    // Mise à jour complète d'une réservation
+    updateReservation(id: number, request: ReservationRequest): Observable<ReservationResponseDTO> {
+    return this.http.put<ReservationResponseDTO>(`${this.apiUrl}/${id}`, request);
+  }
+
     // Récupérer toutes les réservations d'un appartement
   getReservationsByAppartement(appartementId: number): Observable<ReservationResponseDTO[]> {
     return this.http.get<ReservationResponseDTO[]>(`${this.apiUrl}/appartement/${appartementId}`);
@@ -61,6 +66,11 @@ export class ServiceReservation {
   // Mettre à jour le statut d'une réservation de véhicule
   updateReservationVehiStatus(reservationId: number, nouveauStatut: string): Observable<ReservationResponseVehi> {
     return this.http.put<ReservationResponseVehi>(`${this.apiUrls}/${reservationId}/statut?nouveauStatut=${nouveauStatut}`, {});
+  }
+
+  // Mise à jour complète d'une réservation de véhicule
+  updateReservationVehi(id: number, request: ReservationRequestVehi): Observable<ReservationResponseVehi> {
+    return this.http.put<ReservationResponseVehi>(`${this.apiUrls}/${id}`, request);
   }
 
   // Récupérer toutes les réservations de véhicules
@@ -162,5 +172,43 @@ getReservationsByProprietaire(proprietaireId: number): Observable<ReservationRes
    */
   cancelReservationVehi(reservationId: number): Observable<ReservationResponseVehi> {
     return this.http.post<ReservationResponseVehi>(`${this.apiUrls}/${reservationId}/cancel`, {});
+  }
+
+  // 🔹 Export Excel - Réservations Véhicules
+  /**
+   * Exporte toutes les réservations de véhicules en fichier Excel (Admin)
+   */
+  exportReservationsVehiculesToExcel(): Observable<Blob> {
+    return this.http.get(`${this.apiUrls}/vehicules/export/excel`, {
+      responseType: 'blob'
+    });
+  }
+
+  /**
+   * Exporte les réservations de véhicules de l'utilisateur connecté en fichier Excel
+   */
+  exportMyReservationsVehiculesToExcel(): Observable<Blob> {
+    return this.http.get(`${this.apiUrls}/vehicules/me/export/excel`, {
+      responseType: 'blob'
+    });
+  }
+
+  // 🔹 Export Excel - Réservations Appartements
+  /**
+   * Exporte toutes les réservations d'appartements en fichier Excel (Admin)
+   */
+  exportReservationsAppartementsToExcel(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/appartements/export/excel`, {
+      responseType: 'blob'
+    });
+  }
+
+  /**
+   * Exporte les réservations d'appartements de l'utilisateur connecté en fichier Excel
+   */
+  exportMyReservationsAppartementsToExcel(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/appartements/me/export/excel`, {
+      responseType: 'blob'
+    });
   }
 }

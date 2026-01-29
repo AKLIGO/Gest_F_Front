@@ -122,13 +122,11 @@ export class GestionDesBiens implements OnInit {
     if (this.ajoutForm.invalid) return;
 
     const formValue = this.ajoutForm.value;
-    const selectedImmeuble = this.immeubleOptions.find(i => i.id === Number(formValue.immeubleId));
-    if (!selectedImmeuble) return alert('Veuillez sélectionner un immeuble valide');
 
     // payload correct pour le backend
     const payload: AppartementCreate = {
       ...formValue,
-      immeubleId: selectedImmeuble.id,
+      immeubleId: formValue.immeubleId ? Number(formValue.immeubleId) : null,
       proprietaireId: this.currentUser?.id || 0 // Associer automatiquement au propriétaire connecté
     };
 
