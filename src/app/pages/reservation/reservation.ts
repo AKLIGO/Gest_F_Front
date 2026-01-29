@@ -34,7 +34,28 @@ export class Reservation implements OnInit{
   }
 
   updatePagedReservations(): void {
-    this.applyFiltersAndSort();
+    let filtered = [...this.reservations];
+    
+    // Filtrer par statut
+    if (this.filterStatus !== 'TOUS') {
+      filtered = filtered.filter(r => r.statut === this.filterStatus);
+    }
+    
+    // Appliquer le tri
+    filtered = this.sortReservations(filtered);
+    
+    // Mettre à jour le nombre total de pages
+    this.totalPages = Math.ceil(filtered.length / this.pageSize);
+    
+    // S'assurer que currentPage est valide
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages || 1;
+    }
+    
+    // Mettre à jour les réservations paginées
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedReservations = filtered.slice(startIndex, endIndex);
   }
 
   loadReservations(): void {
@@ -56,24 +77,9 @@ export class Reservation implements OnInit{
    * Applique le filtrage et le tri
    */
   applyFiltersAndSort(): void {
-    let filtered = [...this.reservations];
-    
-    // Filtrer par statut
-    if (this.filterStatus !== 'TOUS') {
-      filtered = filtered.filter(r => r.statut === this.filterStatus);
-    }
-    
-    // Appliquer le tri
-    filtered = this.sortReservations(filtered);
-    
-    // Mettre à jour la pagination
-    this.totalPages = Math.ceil(filtered.length / this.pageSize);
+    // Réinitialiser la page à 1 lors d'un changement de filtre/tri
     this.currentPage = 1;
-    
-    // Mettre à jour les réservations paginées
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.pagedReservations = filtered.slice(startIndex, endIndex);
+    this.updatePagedReservations();
   }
   
   /**

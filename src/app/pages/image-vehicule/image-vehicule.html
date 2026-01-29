@@ -1,13 +1,30 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8 px-4">
-  <div class="max-w-2xl mx-auto">
-    <div class="bg-white rounded-2xl shadow-xl p-8 space-y-6">
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full mb-4">
-          <i class="fas fa-images text-white text-2xl"></i>
-        </div>
-        <h2 class="text-3xl font-bold text-gray-800 mb-2">Ajouter une image à un véhicule</h2>
-        <p class="text-gray-600">Téléchargez des images pour vos véhicules</p>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+  <!-- Hero Section Premium -->
+  <section class="relative py-16 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 overflow-hidden">
+    <!-- Background Animé -->
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-20 right-10 w-72 h-72 bg-pink-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <!-- Badge Premium -->
+      <div class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-white mb-6 border border-white/30">
+        <i class="fas fa-images text-xl mr-3"></i>
+        <span class="font-semibold">Gestion des Images Véhicules</span>
       </div>
+
+      <!-- Titre Principal -->
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-white mb-4">
+        Ajouter une image à un <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-pink-200">véhicule</span>
+      </h1>
+      <p class="text-xl text-blue-100 font-light">Téléchargez des images pour vos véhicules</p>
+    </div>
+  </section>
+
+  <div class="container mx-auto -mt-10 pb-10 relative z-20 px-4">
+    <div class="max-w-2xl mx-auto">
+      <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/50 p-8 space-y-6">
 
   <!-- Sélection du véhicule -->
   <div>
@@ -85,18 +102,18 @@
   </div>
     </div>
   </div>
-</div>
+  </div>
 
-<!-- Tableau des images -->
-<div class="max-w-7xl mx-auto px-4 pb-8">
-  <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 px-6 py-4">
-      <h3 class="text-2xl font-bold text-white flex items-center">
-        <i class="fas fa-images mr-3"></i>
-        Liste des images des véhicules
-      </h3>
-    </div>
+  <!-- Liste des images -->
+  <div class="container mx-auto py-10 px-4">
+    <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/50">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-6 py-4">
+        <h3 class="text-2xl font-bold text-white flex items-center justify-center">
+          <i class="fas fa-images mr-3"></i>
+          Liste des images des véhicules
+        </h3>
+      </div>
 
     <!-- Table -->
     <div class="overflow-x-auto">
@@ -162,10 +179,11 @@
     </div>
 
     <!-- Empty state -->
-    <div *ngIf="imagesVehicules?.length === 0" class="text-center py-12">
+    <div *ngIf="imagesVehicules?.length === 0" class="text-center py-12 px-6">
       <i class="fas fa-images text-6xl text-gray-300 mb-4"></i>
       <p class="text-xl font-semibold text-gray-700 mb-2">Aucune image disponible</p>
       <p class="text-gray-500">Commencez par ajouter des images à vos véhicules</p>
+    </div>
     </div>
   </div>
 </div>

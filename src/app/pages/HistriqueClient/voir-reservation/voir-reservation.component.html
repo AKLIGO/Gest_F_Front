@@ -1,14 +1,30 @@
-<div class="p-6 bg-gray-50 min-h-screen">
-  <!-- En-tête de la page -->
-  <div class="mb-6">
-    <h2 class="text-3xl font-bold text-gray-800 mb-2">
-      <i class="fas fa-building text-blue-500 mr-3"></i>Mes Réservations Appartements
-    </h2>
-    <p class="text-gray-600">Gérez vos réservations d'appartements et effectuez vos paiements</p>
-  </div>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+  <!-- Hero Section Premium -->
+  <section class="relative py-12 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 overflow-hidden">
+    <!-- Background Animé -->
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-20 right-10 w-72 h-72 bg-pink-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+    </div>
 
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <!-- Badge Premium -->
+      <div class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-white mb-4 border border-white/30">
+        <i class="fas fa-building text-xl mr-3"></i>
+        <span class="font-semibold">Mes Réservations</span>
+      </div>
+
+      <!-- Titre Principal -->
+      <h1 class="text-4xl lg:text-5xl font-extrabold text-white mb-3">
+        Mes Réservations <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-pink-200">Appartements</span>
+      </h1>
+      <p class="text-lg text-blue-100 font-light">Gérez vos réservations d'appartements et effectuez vos paiements</p>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-4 -mt-8 relative z-20 pb-10">
   <!-- Barre de filtres et recherche -->
-  <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+  <div class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-6 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
       
       <!-- Recherche -->
@@ -88,12 +104,12 @@
   </div>
 
   <!-- Tableau des réservations -->
-  <div *ngIf="!loading && paginatedReservations.length > 0" class="bg-white rounded-lg shadow-sm overflow-hidden">
+  <div *ngIf="!loading && paginatedReservations.length > 0" class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/50">
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         
         <!-- En-tête -->
-        <thead class="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+        <thead class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white">
           <tr>
             <th class="px-6 py-4 text-left text-sm font-semibold">ID</th>
             <th class="px-6 py-4 text-left text-sm font-semibold">Appartement</th>
@@ -203,7 +219,7 @@
     </div>
 
     <!-- Pagination -->
-    <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+    <div class="bg-white/50 backdrop-blur-sm px-6 py-4 border-t border-gray-200">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
         
         <!-- Informations -->
@@ -277,7 +293,7 @@
   </div>
 
   <!-- Message si aucune réservation -->
-  <div *ngIf="!loading && paginatedReservations.length === 0" class="bg-white rounded-lg shadow-sm p-12 text-center">
+  <div *ngIf="!loading && paginatedReservations.length === 0" class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-12 text-center">
     <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
     <p class="text-xl font-semibold text-gray-700 mb-2">Aucune réservation trouvée</p>
     <p class="text-gray-500">
@@ -409,4 +425,4 @@
     </div>
 
   </div>
-</div>
+  </div>

@@ -1,63 +1,125 @@
-<div class="p-6">
-    <h2 class="text-2xl font-bold mb-4">Gestion des Immeubles</h2>
-  
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+  <!-- Hero Section Premium -->
+  <section class="relative py-16 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 overflow-hidden">
+    <!-- Background Animé -->
+    <div class="absolute inset-0 opacity-20">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute bottom-20 right-10 w-72 h-72 bg-pink-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <!-- Badge Premium -->
+      <div class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full text-white mb-6 border border-white/30">
+        <i class="fas fa-building text-xl mr-3"></i>
+        <span class="font-semibold">Gestion Immobilière</span>
+      </div>
+
+      <!-- Titre Principal -->
+      <h1 class="text-5xl lg:text-6xl font-extrabold text-white mb-4">
+        Gestion des <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-pink-200">Immeubles</span>
+      </h1>
+    </div>
+  </section>
+
+  <div class="container mx-auto -mt-10 pb-10 relative z-20 px-4">
     <!-- Chargement -->
-    <div *ngIf="isLoading" class="text-blue-500">Chargement...</div>
+    <div *ngIf="isLoading" class="text-center py-8">
+      <i class="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+      <p class="text-blue-600 mt-2 font-semibold">Chargement...</p>
+    </div>
   
     <!-- Formulaire ajout -->
-    <div class="bg-gray-100 p-4 rounded mb-6">
-      <h3 class="font-semibold mb-2">Ajouter un immeuble</h3>
-      <div class="grid grid-cols-2 gap-4">
-        <input [(ngModel)]="newImmeuble.nom" placeholder="Nom" class="border rounded px-2 py-1" />
-        <input [(ngModel)]="newImmeuble.ville" placeholder="Ville" class="border rounded px-2 py-1" />
-        <input type="number" [(ngModel)]="newImmeuble.nbrAppartment" placeholder="Nombre d'appartements" class="border rounded px-2 py-1" />
-        <input type="number" [(ngModel)]="newImmeuble.nbrEtage" placeholder="Nombre d'étages" class="border rounded px-2 py-1" />
-        <textarea [(ngModel)]="newImmeuble.description" placeholder="Description" class="border rounded px-2 py-1 col-span-2"></textarea>
-        <select [(ngModel)]="newImmeuble.type" class="border rounded px-2 py-1">
+    <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/50 p-8 mb-8">
+      <h3 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-plus-circle text-blue-600 mr-3"></i>
+        Ajouter un immeuble
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input [(ngModel)]="newImmeuble.nom" placeholder="Nom" class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" />
+        <input [(ngModel)]="newImmeuble.ville" placeholder="Ville" class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" />
+        <input type="number" [(ngModel)]="newImmeuble.nbrAppartment" placeholder="Nombre d'appartements" class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" />
+        <input type="number" [(ngModel)]="newImmeuble.nbrEtage" placeholder="Nombre d'étages" class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" />
+        <textarea [(ngModel)]="newImmeuble.description" placeholder="Description" class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 col-span-1 md:col-span-2 min-h-[100px]"></textarea>
+        <select [(ngModel)]="newImmeuble.type" class="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
           <option *ngFor="let t of types" [value]="t">{{t}}</option>
         </select>
       </div>
-      <button (click)="addImmeuble()" class="mt-3 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-        Ajouter
+      <button (click)="addImmeuble()" class="mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 font-semibold">
+        <i class="fas fa-plus mr-2"></i>Ajouter
       </button>
     </div>
   
     <!-- Liste des immeubles -->
-    <table class="w-full border">
-      <thead>
-        <tr class="bg-gray-200">
-          <th class="border px-2 py-1">Nom</th>
-          <th class="border px-2 py-1">Ville</th>
-          <th class="border px-2 py-1">Type</th>
-          <th class="border px-2 py-1">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let i of immeubles">
-          <td class="border px-2 py-1">{{i.nom}}</td>
-          <td class="border px-2 py-1">{{i.ville}}</td>
-          <td class="border px-2 py-1">{{i.type}}</td>
-          <td class="border px-2 py-1">
-            <button (click)="editImmeuble(i)" class="text-yellow-600 mr-2">Modifier</button>
-            <button (click)="deleteImmeuble(i.id)" class="text-red-600">Supprimer</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/50">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 px-6 py-4">
+        <h3 class="text-2xl font-bold text-white flex items-center">
+          <i class="fas fa-list mr-3"></i>
+          Liste des immeubles
+        </h3>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Nom</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ville</th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let i of immeubles; let idx = index" class="hover:bg-blue-50 transition duration-150" [class.bg-gray-50]="idx % 2 === 1">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm font-medium text-gray-900">{{i.nom}}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm text-gray-700">{{i.ville}}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {{i.type}}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-center">
+                <div class="flex items-center justify-center gap-2">
+                  <button (click)="editImmeuble(i)" class="inline-flex items-center px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-600 transform hover:scale-105 transition duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-edit mr-1"></i>Modifier
+                  </button>
+                  <button (click)="deleteImmeuble(i.id)" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transform hover:scale-105 transition duration-200 shadow-sm hover:shadow-md">
+                    <i class="fas fa-trash-alt mr-1"></i>Supprimer
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   
     <!-- Edition -->
-    <div *ngIf="editingImmeuble" class="bg-yellow-50 p-4 mt-4 rounded">
-      <h3 class="font-semibold mb-2">Modifier l’immeuble</h3>
-      <input [(ngModel)]="editingImmeuble.nom" placeholder="Nom" class="border rounded px-2 py-1 mb-2 block" />
-      <input [(ngModel)]="editingImmeuble.ville" placeholder="Ville" class="border rounded px-2 py-1 mb-2 block" />
-      <select [(ngModel)]="editingImmeuble.type" class="border rounded px-2 py-1 mb-2 block">
-        <option *ngFor="let t of types" [value]="t">{{t}}</option>
-      </select>
+    <div *ngIf="editingImmeuble" class="bg-white/80 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden border border-white/50 p-8 mt-8">
+      <h3 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-edit text-yellow-600 mr-3"></i>
+        Modifier l'immeuble
+      </h3>
+      <div class="space-y-4">
+        <input [(ngModel)]="editingImmeuble.nom" placeholder="Nom" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition duration-200" />
+        <input [(ngModel)]="editingImmeuble.ville" placeholder="Ville" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition duration-200" />
+        <select [(ngModel)]="editingImmeuble.type" class="w-full border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition duration-200">
+          <option *ngFor="let t of types" [value]="t">{{t}}</option>
+        </select>
+      </div>
   
-      <div class="space-x-2">
-        <button (click)="updateImmeuble()" class="bg-green-600 text-white px-4 py-1 rounded">Sauvegarder</button>
-        <button (click)="cancelEdit()" class="bg-gray-400 text-white px-4 py-1 rounded">Annuler</button>
+      <div class="flex gap-3 mt-6">
+        <button (click)="updateImmeuble()" class="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transform hover:-translate-y-0.5 transition-all duration-300 font-semibold shadow-md hover:shadow-lg">
+          <i class="fas fa-save mr-2"></i>Sauvegarder
+        </button>
+        <button (click)="cancelEdit()" class="bg-gray-400 text-white px-6 py-3 rounded-xl hover:bg-gray-500 transform hover:-translate-y-0.5 transition-all duration-300 font-semibold shadow-md hover:shadow-lg">
+          <i class="fas fa-times mr-2"></i>Annuler
+        </button>
       </div>
     </div>
   </div>
-  
+</div>
