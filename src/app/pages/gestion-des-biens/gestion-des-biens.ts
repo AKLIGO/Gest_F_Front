@@ -71,6 +71,25 @@ export class GestionDesBiens implements OnInit {
     return immeuble ? immeuble.nom : 'Non trouvé';
   }
 
+//   getImmeubleNom(app: any): string { // Utiliser 'any' temporairement pour le debug
+//   // Vérifier si l'ID est direct ou dans un sous-objet
+//   const idRecherche = app.immeubleId || (app.immeuble ? app.immeuble.id : null);
+
+//   if (!idRecherche) {
+//     return 'Non défini';
+//   }
+
+//   if (!this.immeubleOptions || this.immeubleOptions.length === 0) {
+//     return 'Chargement...';
+//   }
+
+//   const immeuble = this.immeubleOptions.find(i => 
+//     Number(i.id) === Number(idRecherche)
+//   );
+  
+//   return immeuble ? immeuble.nom : 'Non trouvé';
+// }
+
   ngOnInit(): void {
     this.loadCurrentUser();
     this.loadImmeubles();

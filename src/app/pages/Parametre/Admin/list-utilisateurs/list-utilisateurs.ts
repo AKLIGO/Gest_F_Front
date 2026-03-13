@@ -100,6 +100,62 @@ updateUser(): void {
       });
     }
   }
+
+  /**
+   * Bloquer un compte utilisateur
+   */
+  bloquerCompte(userId: number): void {
+    if(confirm('Voulez-vous vraiment bloquer ce compte utilisateur ?')) {
+      this.userService.bloquerCompte(userId).subscribe({
+        next: (message) => {
+          alert(message);
+          this.loadUtilisateurs(); // Recharger la liste pour mettre à jour l'état
+        },
+        error: (err) => {
+          console.error('Erreur lors du blocage:', err);
+          alert('Erreur lors du blocage du compte');
+        }
+      });
+    }
+  }
+
+  /**
+   * Débloquer un compte utilisateur
+   */
+  debloquerCompte(userId: number): void {
+    if(confirm('Voulez-vous vraiment débloquer ce compte utilisateur ?')) {
+      this.userService.debloquerCompte(userId).subscribe({
+        next: (message) => {
+          alert(message);
+          this.loadUtilisateurs(); // Recharger la liste pour mettre à jour l'état
+        },
+        error: (err) => {
+          console.error('Erreur lors du déblocage:', err);
+          alert('Erreur lors du déblocage du compte');
+        }
+      });
+    }
+  }
+
+activerCompte(userId: number): void {
+  if (confirm("Voulez-vous vraiment activer ce compte utilisateur ?")) {
+
+    this.userService.activerCompte(userId).subscribe({
+      next: (message) => {
+        alert(message);
+        this.loadUtilisateurs(); // recharge la liste
+      },
+
+      error: (err) => {
+        console.error("Erreur lors de l'activation :", err);
+        alert("Erreur lors de l'activation du compte");
+      }
+
+    });
+
+  }
+}
+
   getRolesAsString(user: any): string {
   return user.roles?.map((r: any) => r.name).join(', ') || 'Aucun rôle';
 }

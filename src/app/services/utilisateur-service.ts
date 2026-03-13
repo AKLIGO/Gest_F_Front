@@ -53,6 +53,53 @@ updateUtilisateur(id: number, user: Utilisateurs): Observable<Utilisateurs> {
     deleteUser(id: number): Observable<void> {
     return this.httpclient.delete<void>(`${this.baseUrl}/supprimerUtilisateur/${id}`);
   }
+
+  /**
+   * Bloquer un compte utilisateur
+   */
+  bloquerCompte(userId: number): Observable<string> {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error("Utilisateur non authentifié");
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpclient.put<string>(
+      `${this.baseUrl}/bloquer/${userId}`,
+      {},
+      { headers, responseType: 'text' as 'json' }
+    );
+  }
+
+  /**
+   * Débloquer un compte utilisateur
+   */
+  debloquerCompte(userId: number): Observable<string> {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error("Utilisateur non authentifié");
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpclient.put<string>(
+      `${this.baseUrl}/debloquer/${userId}`,
+      {},
+      { headers, responseType: 'text' as 'json' }
+    );
+  }
+
+  activerCompte(userId: number): Observable<string> {
+    const token = this.getToken();
+    if (!token) {
+      throw new Error("Utilisateur non authentifié");
+    }
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.httpclient.put<string>(
+      `${this.baseUrl}/activer/${userId}`,
+      {},
+      { headers, responseType: 'text' as 'json' }
+    );
+    
+  }
+
   authenticate(request: Authentication): Observable<AuthenticationResponse> {
     return this.httpclient.post<AuthenticationResponse>(`${this.baseUrl}/authenticate`, request);
   }

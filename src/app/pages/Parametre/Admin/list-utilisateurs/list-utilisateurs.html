@@ -56,13 +56,25 @@
             <td class="py-2 px-3">{{ user.adresse }}</td>
             <td class="py-2 px-3 text-sm text-gray-700">{{getRolesAsString(user)}}</td>
             <td class="py-2 px-3 flex gap-2">
-              <!-- <button class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                (click)="editUser(user)">
-                ✏️ Modifier
-              </button> -->
-              <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                (click)="deleteUser(user.id!)">
-                🗑️ Supprimer
+              <!-- Bouton Bloquer si le compte est actif (enabled=true) -->
+              <button *ngIf="user.accountLocked" 
+                class="bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600"
+                (click)="debloquerCompte(user.id!)">
+                🔒 Bloquer
+              </button>
+              <!-- Bouton Débloquer si le compte est bloqué (enabled=false) -->
+              <button *ngIf="!user.accountLocked" 
+                class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                (click)="bloquerCompte(user.id!)">
+                🔓 Débloquer
+              </button>
+
+              <!-- Activer le compte si enabled = false -->
+              <button
+                  *ngIf="!user.enabled"
+                  class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  (click)="activerCompte(user.id!)">
+                    Non Activer
               </button>
             </td>
           </tr>
