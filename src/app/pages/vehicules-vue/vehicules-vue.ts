@@ -217,7 +217,7 @@ export class VehiculesVue implements OnInit {
       },
       error: (err) => {
         console.error('Erreur création réservation:', err);
-        alert('Erreur lors de la création de la réservation.');
+        alert('Erreur lors de la création de la réservation... Veuillez vous Connecter');
       }
     });
   }
