@@ -4,6 +4,7 @@ export interface ReservationResponseVehi {
   dateFin: string;                // Date de fin (ISO string)
   vehiculeMarque: string;         // Marque du véhicule
   vehiculeImmatriculation: string;// Immatriculation du véhicule
+  montant: number;               // Montant total de la réservation
   utilisateurNom: string;         // Nom de l'utilisateur
   utilisateurPrenoms: string;    // Prénoms de l'utilisateur
   statut: string;                 // Statut de la réservation

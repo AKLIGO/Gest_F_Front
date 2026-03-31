@@ -1,12 +1,61 @@
-<footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <p>&copy; 2023 Votre Entreprise. Tous droits réservés.</p>
-        <ul class="social-links">
-          <li><a href="#">Facebook</a></li>
-          <li><a href="#">Twitter</a></li>
-          <li><a href="#">Instagram</a></li>
+<footer class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white pt-14 pb-6">
+
+  <!-- Contenu principal -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 pb-10 border-b border-white/10">
+
+      <!-- Colonne 1 : Marque -->
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <i class="fas fa-building text-white text-lg"></i>
+          </div>
+          <span class="text-xl font-bold tracking-wide">GestionApp</span>
+        </div>
+        <p class="text-gray-400 text-sm leading-relaxed">
+          Votre plateforme de gestion de biens immobiliers et de véhicules. Simple, rapide et fiable.
+        </p>
+      </div>
+
+      <!-- Colonne 2 : Liens rapides -->
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-300 mb-4">Liens rapides</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="text-gray-400 hover:text-white transition duration-200 flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-purple-400"></i>Accueil</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition duration-200 flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-purple-400"></i>Appartements</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition duration-200 flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-purple-400"></i>Véhicules</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-white transition duration-200 flex items-center gap-2"><i class="fas fa-chevron-right text-xs text-purple-400"></i>Contact</a></li>
         </ul>
       </div>
+
+      <!-- Colonne 3 : Contact & Réseaux -->
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-300 mb-4">Nous contacter</h3>
+        <ul class="space-y-3 text-sm text-gray-400">
+          <li class="flex items-center gap-2"><i class="fas fa-envelope text-purple-400"></i> koffitsejeromea&#64;gmail.com</li>
+          <li class="flex items-center gap-2"><i class="fas fa-phone text-purple-400"></i> +228 90 44 65 23</li>
+          <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-purple-400"></i> Lomé, Togo</li>
+        </ul>
+        <!-- Réseaux sociaux -->
+        <div class="flex gap-3 mt-5">
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-blue-600 flex items-center justify-center transition duration-200" title="Facebook">
+            <i class="fab fa-facebook-f text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-sky-500 flex items-center justify-center transition duration-200" title="Twitter">
+            <i class="fab fa-twitter text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 hover:bg-pink-600 flex items-center justify-center transition duration-200" title="Instagram">
+            <i class="fab fa-instagram text-sm"></i>
+          </a>
+        </div>
+      </div>
     </div>
-  </footer>
+
+    <!-- Bas du footer -->
+    <div class="flex flex-col sm:flex-row items-center justify-between pt-6 gap-2 text-sm text-gray-500">
+      <p>&copy; {{ currentYear }} GestionApp. Tous droits réservés.</p>
+      <p class="flex items-center gap-1">Conçu avec <i class="fas fa-heart text-red-500 text-xs"></i> pour vous</p>
+    </div>
+  </div>
+
+</footer>
