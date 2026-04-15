@@ -138,18 +138,16 @@
               <td class="px-4 py-3 whitespace-nowrap text-center">
                 <div class="flex items-center justify-center gap-2">
                   <button 
-                    *ngIf="r.statut === statusReservation.EN_ATTENTE"
+                    *ngIf="r.statut !== statusReservation.VALIDEE && r.statut !== statusReservation.CONFIRMEE"
                     class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition duration-200 shadow-sm hover:shadow"
                     (click)="validateReservation(r.id)"
                     title="Valider la réservation">
                     <i class="fas fa-check mr-1"></i>Valider
                   </button>
                   <button 
+                    *ngIf="r.statut !== statusReservation.ANNULEE"
                     class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-lg transition duration-200 shadow-sm hover:shadow" 
-                    (click)="deleteReservation(r.id)"
-                    [disabled]="r.statut === statusReservation.ANNULEE"
-                    [class.opacity-50]="r.statut === statusReservation.ANNULEE"
-                    [class.cursor-not-allowed]="r.statut === statusReservation.ANNULEE"
+                    (click)="cancelReservation(r.id)"
                     title="Annuler la réservation">
                     <i class="fas fa-times mr-1"></i>Annuler
                   </button>

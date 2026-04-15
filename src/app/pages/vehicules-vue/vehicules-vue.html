@@ -270,9 +270,9 @@
     <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
       <div class="flex justify-between items-start">
         <div>
-          <h2 class="text-3xl font-bold mb-2">{{ selectedVehicule?.marque }} {{ selectedVehicule?.modele }}</h2>
+          <h2 class="text-3xl font-bold mb-2">{{ selectedVehicule.marque }} {{ selectedVehicule.modele }}</h2>
           <p class="text-purple-100 flex items-center">
-            <i class="fas fa-id-card mr-2"></i>{{ selectedVehicule?.immatriculation }}
+            <i class="fas fa-id-card mr-2"></i>{{ selectedVehicule.immatriculation }}
           </p>
         </div>
         <button (click)="closeDetails()" class="text-white hover:bg-white/20 rounded-full p-2 transition-all duration-200">
@@ -283,20 +283,20 @@
 
     <!-- Galerie d'images moderne -->
     <div class="p-6 bg-gray-50">
-      <ng-container *ngIf="(selectedVehicule?.images?.length ?? 0) > 0; else noImages">
+      <ng-container *ngIf="(selectedVehicule.images?.length ?? 0) > 0; else noImages">
         <div class="relative rounded-2xl overflow-hidden shadow-xl">
-          <img [src]="getImageUrl(selectedVehicule?.images?.[selectedImageIndex])"
+          <img [src]="getImageUrl(selectedVehicule.images?.[selectedImageIndex])"
                class="w-full h-96 object-cover"
-               [alt]="selectedVehicule?.marque + ' ' + selectedVehicule?.modele">
+               [alt]="selectedVehicule.marque + ' ' + selectedVehicule.modele">
 
           <!-- Boutons de navigation -->
-          <button *ngIf="(selectedVehicule?.images?.length ?? 0) > 1"
+          <button *ngIf="(selectedVehicule.images?.length ?? 0) > 1"
                   (click)="prevImage()"
                   class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
             <i class="fas fa-chevron-left text-purple-600 text-xl"></i>
           </button>
 
-          <button *ngIf="(selectedVehicule?.images?.length ?? 0) > 1"
+          <button *ngIf="(selectedVehicule.images?.length ?? 0) > 1"
                   (click)="nextImage()"
                   class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110">
             <i class="fas fa-chevron-right text-purple-600 text-xl"></i>
@@ -304,17 +304,17 @@
 
           <!-- Indicateur de position -->
           <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white text-sm px-4 py-2 rounded-full font-medium">
-            <i class="fas fa-images mr-2"></i>{{ selectedImageIndex + 1 }} / {{ selectedVehicule?.images?.length ?? 0 }}
+            <i class="fas fa-images mr-2"></i>{{ selectedImageIndex + 1 }} / {{ selectedVehicule.images?.length ?? 0 }}
           </div>
 
           <!-- Badge statut -->
           <div class="absolute top-4 right-4">
             <span class="px-4 py-2 text-sm font-bold rounded-full shadow-lg backdrop-blur-sm"
                   [ngClass]="{
-                    'bg-green-500/90 text-white': selectedVehicule?.statut === StatutVehicule.DISPONIBLE,
-                    'bg-gray-500/90 text-white': selectedVehicule?.statut !== StatutVehicule.DISPONIBLE
+                    'bg-green-500/90 text-white': selectedVehicule.statut === StatutVehicule.DISPONIBLE,
+                    'bg-gray-500/90 text-white': selectedVehicule.statut !== StatutVehicule.DISPONIBLE
                   }">
-              <i class="fas fa-circle text-xs mr-1"></i>{{ selectedVehicule?.statut }}
+              <i class="fas fa-circle text-xs mr-1"></i>{{ selectedVehicule.statut }}
             </span>
           </div>
         </div>
@@ -334,7 +334,7 @@
       <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-6 mb-6 text-center">
         <div class="text-sm text-gray-600 mb-2 font-medium">Prix de location</div>
         <div class="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-2">
-          {{ selectedVehicule?.prix | currency:'XOF' }}
+          {{ selectedVehicule.prix | currency:'XOF' }}
         </div>
         <div class="text-sm text-gray-600">par jour</div>
       </div>
@@ -346,7 +346,7 @@
             <i class="fas fa-car-side text-blue-600 text-lg"></i>
           </div>
           <div class="text-xs text-gray-600 text-center mb-1">Type</div>
-          <div class="font-bold text-gray-900 text-center">{{ selectedVehicule?.type }}</div>
+          <div class="font-bold text-gray-900 text-center">{{ selectedVehicule.type }}</div>
         </div>
 
         <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-xl border-2 border-yellow-200">
@@ -354,7 +354,7 @@
             <i class="fas fa-gas-pump text-yellow-600 text-lg"></i>
           </div>
           <div class="text-xs text-gray-600 text-center mb-1">Carburant</div>
-          <div class="font-bold text-gray-900 text-center">{{ selectedVehicule?.carburant }}</div>
+          <div class="font-bold text-gray-900 text-center">{{ selectedVehicule.carburant }}</div>
         </div>
 
         <div class="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border-2 border-green-200">
@@ -364,9 +364,9 @@
           <div class="text-xs text-gray-600 text-center mb-1">Statut</div>
           <div class="font-bold text-center"
                [ngClass]="{
-                 'text-green-600': selectedVehicule?.statut === StatutVehicule.DISPONIBLE,
-                 'text-gray-600': selectedVehicule?.statut !== StatutVehicule.DISPONIBLE
-               }">{{ selectedVehicule?.statut }}</div>
+                 'text-green-600': selectedVehicule.statut === StatutVehicule.DISPONIBLE,
+                 'text-gray-600': selectedVehicule.statut !== StatutVehicule.DISPONIBLE
+               }">{{ selectedVehicule.statut }}</div>
         </div>
 
         <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border-2 border-purple-200">
@@ -374,7 +374,7 @@
             <i class="fas fa-tag text-purple-600 text-lg"></i>
           </div>
           <div class="text-xs text-gray-600 text-center mb-1">Marque</div>
-          <div class="font-bold text-gray-900 text-center">{{ selectedVehicule?.marque }}</div>
+          <div class="font-bold text-gray-900 text-center">{{ selectedVehicule.marque }}</div>
         </div>
       </div>
     </div>

@@ -136,19 +136,20 @@ export class ReservationVehicule implements OnInit{
   this.updatePagedReservations();
   }
 
-    deleteReservation(id: number): void {
-    if (confirm('Voulez-vous vraiment annuler cette réservation ?')) {
-      this.reservationService.deleteReservation(id).subscribe({
-        next: () => {
-          this.reservationVehicule = this.reservationVehicule.filter(r => r.id !== id);
-          this.totalPages = Math.ceil(this.reservationVehicule.length / this.pageSize);
-          if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
-          this.updatePagedReservations();
-        },
-        error: (err) => console.error('Erreur suppression réservation:', err)
-      });
+    cancelReservation(id: number): void {
+      if (confirm('Voulez-vous vraiment annuler cette réservation ?')) {
+        this.reservationService.updateReservationVehiStatus(id, StatusReservation.ANNULEE).subscribe({
+          next: (updatedReservation) => {
+            const index = this.reservationVehicule.findIndex(r => r.id === id);
+            if (index !== -1) {
+              this.reservationVehicule[index] = updatedReservation;
+              this.updatePagedReservations();
+            }
+          },
+          error: (err) => console.error('Erreur annulation réservation:', err)
+        });
+      }
     }
-  }
 
   validateReservation(id:number): void{
       if(confirm('Voulez-vous vraiment valider cette réservation ?')){

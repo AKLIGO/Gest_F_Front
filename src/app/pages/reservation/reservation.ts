@@ -156,16 +156,17 @@ export class Reservation implements OnInit{
 
 
   
-  deleteReservation(id: number): void {
+  cancelReservation(id: number): void {
     if (confirm('Voulez-vous vraiment annuler cette réservation ?')) {
-      this.reservationService.deleteReservation(id).subscribe({
-        next: () => {
-          this.reservations = this.reservations.filter(r => r.id !== id);
-          this.totalPages = Math.ceil(this.reservations.length / this.pageSize);
-          if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
-          this.updatePagedReservations();
+      this.reservationService.updateReservationStatus(id, StatusReservation.ANNULEE).subscribe({
+        next: (updatedReservation) => {
+          const index = this.reservations.findIndex(r => r.id === id);
+          if (index !== -1) {
+            this.reservations[index] = updatedReservation;
+            this.updatePagedReservations();
+          }
         },
-        error: (err) => console.error('Erreur suppression réservation:', err)
+        error: (err) => console.error('Erreur annulation réservation:', err)
       });
     }
   }
