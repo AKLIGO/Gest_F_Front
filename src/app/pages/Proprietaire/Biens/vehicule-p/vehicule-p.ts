@@ -160,9 +160,9 @@ export class VehiculeP implements OnInit {
     return this.vehicules.filter(v => v.statut === 'LOUER').length;
   }
 
-  getReservesCount(): number {
-    return this.vehicules.filter(v => v.statut === 'RESERVER').length;
-  }
+  // getReservesCount(): number {
+  //   return this.vehicules.filter(v => v.statut === 'RESERVER').length;
+  // }
 
   getEnPanneCount(): number {
     return this.vehicules.filter(v => v.statut === 'EN_PANNE').length;

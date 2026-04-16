@@ -131,17 +131,23 @@ export class Appartement implements OnInit {
     
     // Filtre par nom
     if (this.searchNom.trim()) {
-      const nomQuery = this.searchNom.toLowerCase();
+      const nomQuery = this.normalizeSearchText(this.searchNom);
       filtered = filtered.filter(a => 
-        a.nom?.toLowerCase().includes(nomQuery)
+        this.normalizeSearchText(a.nom).includes(nomQuery)
       );
     }
     
     // Filtre par adresse
     if (this.searchAdresse.trim()) {
-      const adresseQuery = this.searchAdresse.toLowerCase();
+      const adresseKeywords = this.normalizeSearchText(this.searchAdresse)
+        .split(' ')
+        .filter(Boolean);
+
       filtered = filtered.filter(a => 
-        a.adresse?.toLowerCase().includes(adresseQuery)
+        this.includesAllKeywords(
+          `${a.adresse ?? ''} ${a.localisation ?? ''}`,
+          adresseKeywords
+        )
       );
     }
     
@@ -317,6 +323,25 @@ reinitialiserFiltres(): void {
     if (img?.previewUrl) return img.previewUrl;
     if (img?.nomFichier) return this.imageService.getImageFileUrl(img.nomFichier);
     return 'https://via.placeholder.com/400x200';
+  }
+
+  private normalizeSearchText(value: string | null | undefined): string {
+    return (value ?? '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private includesAllKeywords(value: string, keywords: string[]): boolean {
+    if (keywords.length === 0) {
+      return true;
+    }
+
+    const normalized = this.normalizeSearchText(value);
+    return keywords.every(keyword => normalized.includes(keyword));
   }
 
   submitReservation(appart: AppartementDTO) {
