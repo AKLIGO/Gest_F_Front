@@ -3,12 +3,13 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { VehiculeDTO } from '../../interfaces/gestions/Vehicules/VehiculeDTO';
 import { ImageDTOv } from '../../interfaces/gestions/image/ImageDTOv';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class VehiculeService {
 
-  private baseUrl = 'http://localhost:8082/api/vehicules'; // ton backend Spring
+  private baseUrl = `${environment.apiBaseUrl}/api/vehicules`;
 
   constructor(private http: HttpClient) {}
 

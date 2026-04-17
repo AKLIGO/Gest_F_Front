@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ProprietaireContactDTO } from '../../interfaces/ProprietaireContactDTO';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProprietaireService {
 
-  private baseUrl = 'http://localhost:8082/api/proprio'; // mettre ton URL backend
+  private baseUrl = `${environment.apiBaseUrl}/api/proprio`;
 
   constructor(private http: HttpClient) { }
 

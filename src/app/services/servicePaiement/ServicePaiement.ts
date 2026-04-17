@@ -3,13 +3,14 @@ import { HttpClient, HttpParams,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ModePaiement } from '../../interfaces/gestions/paiements/ModePaiement';
 import { PaiementDTO } from '../../interfaces/gestions/paiements/PaiementDTO';
+import { environment } from '../../../environments/environment';
 // import { PaiementDTO } from '../../interfaces/gestions/paiements/PaiementDTO';
 @Injectable({
   providedIn: 'root'
 })
 export class ServicePaiement {
 
-  private apiUrl = 'http://localhost:8082/api/paiement';
+  private apiUrl = `${environment.apiBaseUrl}/api/paiement`;
   constructor(private http: HttpClient) {   };
 
     private getHeaders(overrideToken?: string): HttpHeaders {

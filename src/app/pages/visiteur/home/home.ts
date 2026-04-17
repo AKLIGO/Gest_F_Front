@@ -11,6 +11,7 @@ import { ServiceReservation } from '../../../services/serviceReservation/Service
 import { ServiceImage } from '../../../services/servicesImage/service-image';
 import { ProprietaireService } from '../../../services/serviceContact/ProprietaireService';
 import { ProprietaireContactDTO } from '../../../interfaces/ProprietaireContactDTO';
+import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -52,7 +53,7 @@ selectedAppartementForReservation?: AppartementDTO;
 images:string[] = [];
 currentImageIndex: number = 0;
 intervalId: any;
-readonly baseUrl='http://localhost:8082/api/image/file/';
+readonly baseUrl=`${environment.apiBaseUrl}/api/image/file/`;
 
   /**
    * Gestion des images

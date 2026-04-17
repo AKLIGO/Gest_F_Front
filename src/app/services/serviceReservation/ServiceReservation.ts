@@ -7,12 +7,13 @@ import { ReservationResponseDTO } from '../../interfaces/gestions/Reservations/R
 import { ReservationRequestVehi } from '../../interfaces/gestions/Reservations/ReservationRequestVehi';
 import { ReservationResponseVehi } from '../../interfaces/gestions/Reservations/ReservationResponseVehi';
 import { CancellationInfoDTO } from '../../interfaces/gestions/Reservations/CancellationInfoDTO';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceReservation {
-    private apiUrl = 'http://localhost:8082/api/reservations';
-    private apiUrls = 'http://localhost:8082/api/reservations/vehicule';
+    private apiUrl = `${environment.apiBaseUrl}/api/reservations`;
+    private apiUrls = `${environment.apiBaseUrl}/api/reservations/vehicule`;
     constructor(private http: HttpClient) { }
 
     // Créer une nouvelle réservation

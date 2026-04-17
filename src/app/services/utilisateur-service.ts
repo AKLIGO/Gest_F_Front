@@ -8,12 +8,13 @@ import { Utilisateurs } from '../interfaces/Utilisateurs';
 import { jwtDecode } from 'jwt-decode';
 import { UserDto } from '../interfaces/UserDto';
 import { RoleUser } from '../interfaces/RoleUser';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilisateurService {
-  private readonly baseUrl = 'http://localhost:8082/api/auth';
+  private readonly baseUrl = `${environment.apiBaseUrl}/api/auth`;
   private _isAuthenticated = signal<boolean>(false);
   private _currentUser = signal<Utilisateurs | null>(null);
   private _isLoading = signal<boolean>(false);

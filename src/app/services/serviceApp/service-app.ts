@@ -5,12 +5,13 @@ import { AppartementCreate } from '../../interfaces/gestions/Appartement/Apparte
 import { App } from '../../app';
 import { StatutAppartement } from '../../interfaces/gestions/Appartement/StatutAppartement';
 import { AppartementDTO } from '../../interfaces/gestions/Appartement/AppartementDTO';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceApp {
  
-  private apiUrl = 'http://localhost:8082/api/appartement';
+  private apiUrl = `${environment.apiBaseUrl}/api/appartement`;
 
   constructor(private http: HttpClient) { }
 

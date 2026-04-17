@@ -5,12 +5,13 @@ import { ClientRequestDto } from '../interfaces/paiement/ClientRequestDto';
 import { DepositResponseDto } from '../interfaces/paiement/DepositResponseDto';
 import { CheckTransactionDto } from '../interfaces/paiement/CheckTransactionDto';
 import { CheckResponseDTO } from '../interfaces/paiement/CheckResponseDTO';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaygateService {
-  private baseUrl = 'http://localhost:8082/api/payGate';
+  private baseUrl = `${environment.apiBaseUrl}/api/payGate`;
 
   constructor(private http: HttpClient) {}
 

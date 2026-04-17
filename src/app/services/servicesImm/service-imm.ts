@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ImmeubleCreate } from '../../interfaces/gestions/Immeuble/ImmeubleCreate';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceImm {
 
-  private apiUrl = 'http://localhost:8082/api/immeubles';
+  private apiUrl = `${environment.apiBaseUrl}/api/immeubles`;
 
   constructor(private http: HttpClient){};
 

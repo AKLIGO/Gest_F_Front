@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { ImagesCreate } from '../../interfaces/gestions/image/ImagesCreate';
 import { ImageDTOv } from '../../interfaces/gestions/image/ImageDTOv';
 import { ImageDTO } from '../../interfaces/gestions/image/ImageDTO';
+import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class ServiceImage {
 
-  private apiUrl = 'http://localhost:8082/api/image';
+  private apiUrl = `${environment.apiBaseUrl}/api/image`;
 
   constructor(private http: HttpClient) {}
 
